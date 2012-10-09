@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @user.name %>
+</p>
+
+<p>
+  <b>Email:</b>
+  <%= @user.email %>
+</p>
+
+<p>
+	<% if @user.energy_data.any? %>
+      <h3>Energy Datapoints (<%= @energy_data.size %>)</h3>
+      <ol class="energy_data">
+        <%= render :partial => "energy_data/energy_datum", :collection => @energy_data, :as => :energy %>
+      </ol>
+    <% end %>
+</p>
+
+
+<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Back', users_path %>

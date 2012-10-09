@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Month:</b>
+  <%= @energy_datum.month %>
+</p>
+
+<p>
+  <b>Day:</b>
+  <%= @energy_datum.day %>
+</p>
+
+<p>
+  <b>Year:</b>
+  <%= @energy_datum.year %>
+</p>
+
+<p>
+  <b>Hour:</b>
+  <%= @energy_datum.hour %>
+</p>
+
+<p>
+  <b>Power:</b>
+  <%= @energy_datum.power %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%= @energy_datum.user_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_energy_datum_path(@energy_datum) %> |
+<%= link_to 'Back', energy_data_path %>

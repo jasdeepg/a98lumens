@@ -5,3 +5,11 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+EnergyDatum.create(month:1, day:1, year:2012, hour:0, power:0, user_id:1)
+EnergyDatum.create(month:1, day:1, year:2012, hour:4, power:0.5, user_id:1)
+EnergyDatum.create(month:1, day:1, year:2012, hour:8, power:3, user_id:1)
+EnergyDatum.create(month:1, day:1, year:2012, hour:12, power:6, user_id:1)
+EnergyDatum.create(month:1, day:1, year:2012, hour:16, power:7, user_id:1)
+EnergyDatum.create(month:1, day:1, year:2012, hour:20, power:3, user_id:1)
+EnergyDatum.create(month:1, day:1, year:2012, hour:24, power:0, user_id:1)

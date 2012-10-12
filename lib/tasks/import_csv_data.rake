@@ -12,7 +12,7 @@ namespace :db do
         :year => 2012,
         :hour => row[2],
         :power => row[11],
-        :user_id => 1
+        :user_id => 10
       )
     end
   end

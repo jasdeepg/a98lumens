@@ -1,29 +1,50 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <b>Name:</b>
-  <%= @user.name %>
-</p>
+<div class = "row-fluid">
+  <div class = "span9">
+    <div class= "span2">
+      <p>
+        <%= image_tag avatar_url(@user) %>
+      </p>
+      <p>
+        <%= @user.name %>
+      </p>
 
-<p>
-  <b>Email:</b>
-  <%= @user.email %>
-</p>
+      <p>
+        <%= @user.email %>
+      </p>
+    </div>
 
-<p>
-	<% if @user.energy_data.any? %>
-      <h3>Energy Datapoints (<%= @energy_data.size %>)</h3>
-      <ol class="energy_data">
-        <%= render :partial => "energy_data/energy_datum.html.erb", :collection => @energy_data, :as => :energy %>
-      </ol>
-    <% end %>
-</p>
+    <div class="span4">
+      <p>
+        <div id="bar" style="width:600px;height:300px"></div>
+      </p>
+    </div>
+  </div>
+</div>
 
+<div class="row-fluid">
+  <div class="span6 offset2">
+    <p>
+    	<% if @user.energy_data.any? %>
+          <h2> Last 10 days </h2>
+          <table class="table table-striped">
+            <tr>
+              <th>Day</th>
+              <th>Solar output</th>
+            </tr>
+            <tr>
+              <%= render :partial => "energy_data/energy_datum.html.erb", :collection => @energy_data, :as => :energy %>
+            </tr>
+          </table>
+
+        <% end %>
+    </p>
+  </div>
+</div>
 <% javascript_tag do %>
   xyData = "<%=raw @monthsArray.to_json %>";
 <% end %>
-
-<div id="bar" style="width:600px;height:300px"></div>
 
 <script type="text/javascript">
 
@@ -54,18 +75,18 @@
       {
         xaxis: {
           ticks: [
-            [1, "January"],
-            [2, "February"],
-            [3, "March"],
-            [4, "April"],
+            [1, "Jan"],
+            [2, "Feb"],
+            [3, "Mar"],
+            [4, "Apr"],
             [5, "May"],
-            [6, "June"],
-            [7, "July"],
-            [8, "August"],
-            [9, "September"],
-            [10, "October"],
-            [11, "November"],
-            [12, "December"],
+            [6, "Jun"],
+            [7, "Jul"],
+            [8, "Aug"],
+            [9, "Sep"],
+            [10, "Oct"],
+            [11, "Nov"],
+            [12, "Dec"],
           ]
         }   
       }
@@ -75,5 +96,3 @@
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
-
-<%= debug @monthsArray %>

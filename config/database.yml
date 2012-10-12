@@ -11,9 +11,3 @@ test:
   host: localhost
   username: jasdeep1
   password:
-
-production:
-  adapter: postgresql
-  database: users
-  username: 
-  password:

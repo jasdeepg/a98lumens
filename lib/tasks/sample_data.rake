@@ -3,7 +3,7 @@ namespace :db do
   task populate: :environment do
     User.create!(name: "Example User",
                  email: "example@railstutorial.org")
-    99.times do |n|
+    10.times do |n|
       name  = Faker::Name.name
       email = Faker::Internet.email
       User.create!(name: name,
@@ -24,13 +24,14 @@ namespace :db do
     powerGen = Random.new
     hoursinDay = Random.new
 
-    99.times do |n|
+    10.times do |n|
       12.times do |m|
-          day = 1
+        31.times do |d|
+          day = d
           month = m
           year = 2012
           hour =  9
-          power = powerGen.rand(1..90)
+          power = powerGen.rand(1..60)
           user_id = n
           EnergyDatum.create(
             month: month,
@@ -39,6 +40,7 @@ namespace :db do
             hour: hour,
             power: power,
             user_id: user_id)
+        end
       end
     end
 

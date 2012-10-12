@@ -14,7 +14,7 @@ class UsersController < ApplicationController
   # GET /users/1.json
   def show
     @user = User.find(params[:id])
-    @energy_data = @user.energy_data.limit(20)
+    @energy_data = @user.energy_data.order("created_at DESC").where("user_id=#{params[:id]}").limit(10)
     months = (1..12).to_a
     @monthTotals = Hash.new
     @monthsArray = Array.new

@@ -15,6 +15,21 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     @energy_data = @user.energy_data.limit(20)
+    months = (1..12).to_a
+    @monthTotals = Hash.new
+    @monthsArray = Array.new
+
+    months.each do |curMonth|
+      @monthTotals[curMonth] = @user.energy_data.where("month=#{curMonth}").sum("power")
+    end
+
+    @monthTotals.each do |key, value|
+      @monthsArray << [key, value]
+    end
+
+    @month_data = @user.energy_data.where("month=1")
+
+    @month_total = @user.energy_data.where("month=1").sum("power")
 
     respond_to do |format|
       format.html # show.html.erb

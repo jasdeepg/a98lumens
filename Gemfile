@@ -5,8 +5,10 @@ gem 'rails', '3.2.8'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'pg', '0.12.2'
-
+gem 'pg'
+gem 'seer'
+gem 'faker', '1.0.1'
+gem 'gon'
 
 # Gems used only for assets and not required
 # in production environments by default.

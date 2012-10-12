@@ -14,11 +14,66 @@
 	<% if @user.energy_data.any? %>
       <h3>Energy Datapoints (<%= @energy_data.size %>)</h3>
       <ol class="energy_data">
-        <%= render :partial => "energy_data/energy_datum", :collection => @energy_data, :as => :energy %>
+        <%= render :partial => "energy_data/energy_datum.html.erb", :collection => @energy_data, :as => :energy %>
       </ol>
     <% end %>
 </p>
 
+<% javascript_tag do %>
+  xyData = "<%=raw @monthsArray.to_json %>";
+<% end %>
+
+<div id="bar" style="width:600px;height:300px"></div>
+
+<script type="text/javascript">
+
+   $(function () {
+     /*xAxis = @monthTotals.keys;
+     yAxis = @monthTotals.values;
+    
+     xyData = []
+
+     <% @monthTotals.each do |key, value| %>
+       xyData << [key, value];
+     <% end %>*/
+
+     var xyData = <%= @monthsArray.to_json %>;
+
+     $.plot($("#bar"),
+        [
+         {
+           label: "Solar output (kWh)",
+           data: xyData,
+           bars: {
+             show: true,
+             barWidth: 0.5,
+             align: "center"
+           }   
+         }
+      ],
+      {
+        xaxis: {
+          ticks: [
+            [1, "January"],
+            [2, "February"],
+            [3, "March"],
+            [4, "April"],
+            [5, "May"],
+            [6, "June"],
+            [7, "July"],
+            [8, "August"],
+            [9, "September"],
+            [10, "October"],
+            [11, "November"],
+            [12, "December"],
+          ]
+        }   
+      }
+     )
+   });
+ </script>
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
+
+<%= debug @monthsArray %>

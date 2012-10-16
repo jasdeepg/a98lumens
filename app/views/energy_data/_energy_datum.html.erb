@@ -1,4 +1,5 @@
 <tr>
 	<td><%= energy.month %>/<%=energy.day %></td>
 	<td><%= energy.power %> W</td>
+	<td><%= number_with_precision(energy.calculate_emissions_for, :precision=>2) %> kg</td>
 </tr>

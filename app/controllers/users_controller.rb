@@ -14,22 +14,11 @@ class UsersController < ApplicationController
   # GET /users/1.json
   def show
     @user = User.find(params[:id])
-    @energy_data = @user.energy_data.order("created_at DESC").where("user_id=#{params[:id]}").limit(10)
-    months = (1..12).to_a
-    @monthTotals = Hash.new
+    @energy_data = @user.energy_data.order("created_at DESC").limit(10)
+    @dayTotals = @user.energy_data.order("created_at DESC").limit(30)
+    @monthTotals = @user.monthSum
+    @days, @dayTotals = @user.consolidate_week
     @monthsArray = Array.new
-
-    months.each do |curMonth|
-      @monthTotals[curMonth] = @user.energy_data.where("month=#{curMonth}").sum("power")
-    end
-
-    @monthTotals.each do |key, value|
-      @monthsArray << [key, value]
-    end
-
-    @month_data = @user.energy_data.where("month=1")
-
-    @month_total = @user.energy_data.where("month=1").sum("power")
 
     respond_to do |format|
       format.html # show.html.erb

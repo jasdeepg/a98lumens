@@ -18,10 +18,18 @@
     <div class="span4">
       <p>
         <div id="bar" style="width:600px;height:300px"></div>
+        <div id="bar2" style="width:600px;height:300px"></div>
+        <div id="bar3" style="width:600px;height:300px"></div>
       </p>
     </div>
   </div>
 </div>
+
+<p>
+  <%= @user.calculate_overall_emissions_for %>
+  <br>
+  <%= @user.calculate_overall_power_for %>
+</p>
 
 <div class="row-fluid">
   <div class="span6 offset2">
@@ -32,6 +40,7 @@
             <tr>
               <th>Day</th>
               <th>Solar output</th>
+              <th>Emissions saved</th>
             </tr>
             <tr>
               <%= render :partial => "energy_data/energy_datum.html.erb", :collection => @energy_data, :as => :energy %>
@@ -42,8 +51,9 @@
     </p>
   </div>
 </div>
+
 <% javascript_tag do %>
-  xyData = "<%=raw @monthsArray.to_json %>";
+ 
 <% end %>
 
 <script type="text/javascript">
@@ -52,18 +62,20 @@
      /*xAxis = @monthTotals.keys;
      yAxis = @monthTotals.values;
     
-     xyData = []
+     xyData = []Y
 
      <% @monthTotals.each do |key, value| %>
        xyData << [key, value];
      <% end %>*/
 
-     var xyData = <%= @monthsArray.to_json %>;
+     var xyData = <%= @monthTotals.to_json %>;
+     var weekXY = <%= @dayTotals.to_json %>;
+     var dayXY = <%= @user.consolidate_day %>
 
      $.plot($("#bar"),
         [
          {
-           label: "Solar output (kWh)",
+           label: "Solar output (Wh)",
            data: xyData,
            bars: {
              show: true,
@@ -91,8 +103,56 @@
         }   
       }
      )
+
+     $.plot($("#bar2"),
+        [
+         {
+           label: "Solar output (Wh)",
+           data: weekXY,
+           bars: {
+             show: true,
+             barWidth: 0.5,
+             align: "center"
+           }   
+         }
+      ],
+      {
+        xaxis: {
+          ticks: [
+            [0, "Monday"],
+            [1, "Tuesday"],
+            [2, "Wednesday"],
+            [3, "Thursday"],
+            [4, "Friday"],
+            [5, "Saturday"],
+            [6, "Sunday"],
+          ]
+        }   
+      }
+     )
+
+    $.plot($("#bar3"),
+        [
+         {
+           label: "Solar output (Wh)",
+           data: dayXY,
+           bars: {
+             show: true,
+             barWidth: 0.5,
+             align: "center"
+           }   
+         }
+      ],
+      {
+        xaxis: {
+
+        }   
+      }
+     )
    });
  </script>
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
+
+<%= debug @user.consolidate_day %>

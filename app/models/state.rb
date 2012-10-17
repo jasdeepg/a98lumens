@@ -1,29 +1,20 @@
 # == Schema Information
 #
-# Table name: users
+# Table name: states
 #
 #  id         :integer          not null, primary key
-#  name       :string(255)
-#  email      :string(255)
+#  year       :integer
+#  month      :integer
+#  day        :integer
+#  hour       :integer
+#  power      :float
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  state_id   :integer
 #
 
-class User < ActiveRecord::Base
-  attr_accessible :email, :name, :state_id
-  has_many :energy_data, :class_name => "EnergyDatum", :foreign_key => "user_id"
-  
-  def monthSum
-  	months = (1..12).to_a
-  	@monthsTotal = Array.new
-
-  	months.each do |curMonth|
-  		@monthsTotal[curMonth-1] = [curMonth, self.energy_data.where("month=#{curMonth}").sum("power")]
-  	end
-
-  	return @monthsTotal
-  end
+class State < ActiveRecord::Base
+  attr_accessible :day, :hour, :month, :power, :year
+  has_many :user, :class_name=>"User", :foreign_key => "state_id"
 
   # return array with day attributes for graph
   def consolidate_day
@@ -79,20 +70,4 @@ class User < ActiveRecord::Base
 
   	return @dateCount, @daySum
   end
-
-  #calculate overall power generated
-  def calculate_overall_power_for
-  	self.energy_data.sum("power")
-  end
-
-  #calculate overall carbon emissions saved
-  def calculate_overall_emissions_for
-  	powerGenerated = calculate_overall_power_for
-  	emissionsConversion = 0.69/1000 #kg C02/Wh
-
-  	powerGenerated*emissionsConversion #Wh * kg C02/Wh
-  end
-
-
-
 end

@@ -7,4 +7,8 @@ class EnergyDatum < ActiveRecord::Base
   	
   	self.power*carbon_conversion # Wh * kg C02/Wh
   end
+
+  def calculate_dollars_for
+  	#this is a fixed payback rate
+  end
 end

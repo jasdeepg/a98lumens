@@ -1,5 +1,7 @@
 <p id="notice"><%= notice %></p>
 
+<div id="test"></div>
+
 <div class = "row-fluid">
   <div class = "span9">
     <div class= "span2">
@@ -13,26 +15,46 @@
       <p>
         <%= @user.email %>
       </p>
+      <button class="btn btn-medium btn-block">Performance</button>
+      <button class="btn btn-medium btn-block" id="fin">Finance</button>
+      <button class="btn btn-medium btn-block">Green</button>
     </div>
 
-    <div class="span4">
+    <script type="text/javascript">
+      $('#fin').click(function(){
+        $('#test').load(<%= render :partial => "energy_data/energy_datum.html.erb", :collection => @energy_data, :as => :energy %>)
+      });
+    </script>
+
+    <div class="span9">
       <p>
-        <div id="bar" style="width:600px;height:300px"></div>
-        <div id="bar2" style="width:600px;height:300px"></div>
-        <div id="bar3" style="width:600px;height:300px"></div>
+      <a id="day" href="#">Day</a> /
+      <a id="week" href="#">Week</a> /
+      <a id="year" href="#">Year</a>
+      </p>
+      <p>
+        <div id="year-graph" style="width:600px;height:300px"></div>
+        <div id="week-graph" style="width:600px;height:300px;display:none"></div>
+        <div id="day-graph" style="width:600px;height:300px;display:none"></div>
       </p>
     </div>
   </div>
 </div>
 
-<p>
-  <%= @user.calculate_overall_emissions_for %>
-  <br>
-  <%= @user.calculate_overall_power_for %>
-</p>
-
 <div class="row-fluid">
   <div class="span6 offset2">
+    <p>
+      <table class="table table-striped">
+        <tr>
+          <th>Emissions captured</th>
+          <td><%= number_with_precision(@user.calculate_overall_emissions_for, :precision =>2) %> kg </td>
+        </tr>
+        <tr>
+          <th>Clean energy produced</th>
+          <td><%= number_with_precision(@user.calculate_overall_power_for, :precision =>2) %> Wh</td>
+        </tr>
+      </table>
+    </p>
     <p>
     	<% if @user.energy_data.any? %>
           <h2> Last 10 days </h2>
@@ -43,7 +65,9 @@
               <th>Emissions saved</th>
             </tr>
             <tr>
+              <div id="table_data">
               <%= render :partial => "energy_data/energy_datum.html.erb", :collection => @energy_data, :as => :energy %>
+              </div>
             </tr>
           </table>
 
@@ -70,9 +94,9 @@
 
      var xyData = <%= @monthTotals.to_json %>;
      var weekXY = <%= @dayTotals.to_json %>;
-     var dayXY = <%= @user.consolidate_day %>
+     var dayXY = <%= @user.consolidate_day %>;
 
-     $.plot($("#bar"),
+     $.plot($("#year-graph"),
         [
          {
            label: "Solar output (Wh)",
@@ -104,7 +128,7 @@
       }
      )
 
-     $.plot($("#bar2"),
+     $.plot($("#week-graph"),
         [
          {
            label: "Solar output (Wh)",
@@ -131,7 +155,7 @@
       }
      )
 
-    $.plot($("#bar3"),
+    $.plot($("#day-graph"),
         [
          {
            label: "Solar output (Wh)",

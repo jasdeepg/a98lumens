@@ -1,4 +1,10 @@
 namespace :db do
+  desc "Populate state_id column"
+  task pop_state: :environment do
+    user = User.find(1)
+    user.update_attributes(:state_id=>1)
+  end
+
   desc "Fill database with sample data"
   task populate: :environment do
     User.create!(name: "Example User",
@@ -12,6 +18,7 @@ namespace :db do
 
   end
 
+  desc "Populate power data for each user"
   task pop_power: :environment do
     EnergyDatum.create!(month: 1,
                         day: 1,

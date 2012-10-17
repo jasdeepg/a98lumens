@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121013001634) do
+ActiveRecord::Schema.define(:version => 20121016213322) do
 
   create_table "energy_data", :force => true do |t|
     t.integer  "month"
@@ -24,11 +24,22 @@ ActiveRecord::Schema.define(:version => 20121013001634) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "states", :force => true do |t|
+    t.integer  "year"
+    t.integer  "month"
+    t.integer  "day"
+    t.integer  "hour"
+    t.float    "power"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "users", :force => true do |t|
     t.string   "name"
     t.string   "email"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "state_id"
   end
 
 end

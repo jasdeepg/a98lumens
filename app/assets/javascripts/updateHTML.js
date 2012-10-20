@@ -1,4 +1,5 @@
 jQuery(function($) {
+
   $("#day").click(function() {
 
   	var $div1 = $('#day-graph');

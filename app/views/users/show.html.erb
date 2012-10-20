@@ -1,6 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<div id="test"></div>
+<div id="header"></div>
 
 <div class = "row-fluid">
   <div class = "span9">
@@ -15,27 +15,33 @@
       <p>
         <%= @user.email %>
       </p>
-      <button class="btn btn-medium btn-block">Performance</button>
-      <button class="btn btn-medium btn-block" id="fin">Finance</button>
-      <button class="btn btn-medium btn-block">Green</button>
+      <button class= "btn btn-medium btn-block" id="perf">Performance</button>
+      <button class= "btn btn-medium btn-block" id="finance">Finance</button>
+      <button class= "btn btn-medium btn-block" id="green">Environment</button>
+    
+      <br>
+      <table class="table">
+        <tr>
+          <th># panels</th>
+          <td>1</td>
+        </tr>
+        <tr>
+          <th>Date purchased</th>
+          <td>1/2012</td>
+        </tr>
+      </table>
     </div>
-
-    <script type="text/javascript">
-      $('#fin').click(function(){
-        $('#test').load(<%= render :partial => "energy_data/energy_datum.html.erb", :collection => @energy_data, :as => :energy %>)
-      });
-    </script>
 
     <div class="span9">
       <p>
-      <a id="day" href="#">Day</a> /
-      <a id="week" href="#">Week</a> /
-      <a id="year" href="#">Year</a>
+        <a id="day" href="#">Day</a> /
+        <a id="week" href="#">Week</a> /
+        <a id="year" href="#">Year</a>
       </p>
       <p>
-        <div id="year-graph" style="width:600px;height:300px"></div>
-        <div id="week-graph" style="width:600px;height:300px;display:none"></div>
-        <div id="day-graph" style="width:600px;height:300px;display:none"></div>
+        <div id="year-graph", style="width:600px;height:300px"></div>
+        <div id="week-graph", style="width:600px;height:300px;display:none"></div>
+        <div id="day-graph", style="width:600px;height:300px;display:none"></div>
       </p>
     </div>
   </div>
@@ -44,33 +50,43 @@
 <div class="row-fluid">
   <div class="span6 offset2">
     <p>
+      <h2>Cumulative metrics</h2>
       <table class="table table-striped">
+        <tr>
+          <th>Clean energy produced</th>
+          <td><%= number_with_precision(@user.calculate_overall_power_for, :precision =>2) %> Wh</td>
+        </tr>
+        <tr>
+          <th>Money accrued</th>
+          <td><%= number_with_precision(@user.calculate_overall_money_for, :precision =>2) %> dollars </td>
+        </tr>
         <tr>
           <th>Emissions captured</th>
           <td><%= number_with_precision(@user.calculate_overall_emissions_for, :precision =>2) %> kg </td>
         </tr>
         <tr>
-          <th>Clean energy produced</th>
-          <td><%= number_with_precision(@user.calculate_overall_power_for, :precision =>2) %> Wh</td>
+          <th>Trees planted</th>
+          <td><%= number_with_precision(@user.calculate_overall_trees_for, :precision =>2) %> trees</td>
+        </tr>
+        <tr>
+          <th>Cars taken off the road</th>
+          <td><%= number_with_precision(@user.calculate_overall_cars_for, :precision =>2) %> cars</td>
         </tr>
       </table>
     </p>
     <p>
     	<% if @user.energy_data.any? %>
-          <h2> Last 10 days </h2>
+          <h2> Last 10 energy-producing hours </h2>
           <table class="table table-striped">
             <tr>
               <th>Day</th>
               <th>Solar output</th>
               <th>Emissions saved</th>
+              <th>Fraction of a tree planted</th>
+              <th>Money accrued</th>
             </tr>
-            <tr>
-              <div id="table_data">
-              <%= render :partial => "energy_data/energy_datum.html.erb", :collection => @energy_data, :as => :energy %>
-              </div>
-            </tr>
+                <%= render :partial => 'energy_data/energy_datum.html.erb', :collection => @energy_data, :as => :energy %>
           </table>
-
         <% end %>
     </p>
   </div>
@@ -82,26 +98,53 @@
 
 <script type="text/javascript">
 
-   $(function () {
-     /*xAxis = @monthTotals.keys;
-     yAxis = @monthTotals.values;
-    
-     xyData = []Y
+$(function () {
 
-     <% @monthTotals.each do |key, value| %>
-       xyData << [key, value];
-     <% end %>*/
+    var exValue = 1;
 
      var xyData = <%= @monthTotals.to_json %>;
-     var weekXY = <%= @dayTotals.to_json %>;
-     var dayXY = <%= @user.consolidate_day %>;
+     var chartLabel = "Solar output (Wh)"
+     var weekXY = <%= @weekTotals.to_json %>;
+     var dayXY = <%= @dayTotals.to_json %>;
+     $('#header').html('<h1>Performance</h1>');
+
+     $('#green').click(function() {
+      xyData  = <%= @em_monthTotals.to_json %>;
+      weekXY = <%= @em_weekTotals.to_json %>;
+      dayXY = <%= @em_dayTotals.to_json %>;
+      chartLabel = "Emissions captured (kg C02)"
+      $('#header').html('<h1>Environment</h1>')
+      doThis();
+     });
+
+     $('#finance').click(function() {
+      xyData  = <%= @fi_monthTotals.to_json %>;
+      weekXY = <%= @fi_weekTotals.to_json %>;
+      dayXY = <%= @fi_dayTotals.to_json %>;
+      chartLabel = "Money accrued (dollars)"
+      $('#header').html('<h1>Finance</h1>')
+      doThis();
+     });
+
+    $('#perf').click(function() {
+      xyData  = <%= @monthTotals.to_json %>;
+      weekXY = <%= @weekTotals.to_json %>;
+      dayXY = <%= @dayTotals.to_json %>;
+      chartLabel = "Solar output (Wh)"
+      $('#header').html('<h1>Performance</h1>')
+      doThis();
+     });
+
+     doThis();
+
+  function doThis() {
 
      $.plot($("#year-graph"),
         [
          {
-           label: "Solar output (Wh)",
+           label: chartLabel,
            data: xyData,
-           bars: {
+           lines: {
              show: true,
              barWidth: 0.5,
              align: "center"
@@ -131,9 +174,9 @@
      $.plot($("#week-graph"),
         [
          {
-           label: "Solar output (Wh)",
+           label: chartLabel,
            data: weekXY,
-           bars: {
+           lines: {
              show: true,
              barWidth: 0.5,
              align: "center"
@@ -158,9 +201,9 @@
     $.plot($("#day-graph"),
         [
          {
-           label: "Solar output (Wh)",
+           label: chartLabel,
            data: dayXY,
-           bars: {
+           lines: {
              show: true,
              barWidth: 0.5,
              align: "center"
@@ -173,10 +216,8 @@
         }   
       }
      )
-   });
- </script>
+  }
+});
+</script>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
-
-<%= debug @user.consolidate_day %>

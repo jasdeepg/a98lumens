@@ -1,5 +1,10 @@
-<tr>
-	<td><%= energy.month %>/<%=energy.day %></td>
-	<td><%= energy.power %> W</td>
-	<td><%= number_with_precision(energy.calculate_emissions_for, :precision=>2) %> kg</td>
-</tr>
+	<% if energy.power <= 0 %>
+	<% else %>
+		<tr>
+			<td><%= energy.month %>/<%=energy.day %> at <%= energy.hour %>:00</td>
+			<td><%= energy.power %> W</td>
+			<td><%= number_with_precision(energy.calculate_emissions_for, :precision=>2) %> kg</td>
+			<td><%= number_with_precision(energy.calculate_trees_for, :precision=>4) %> trees</td>
+			<td><%= number_with_precision(energy.calculate_money_for, :precision=>4) %> cents</td>
+		</tr>
+	<% end %>

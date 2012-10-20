@@ -4,8 +4,11 @@ class UsersController < ApplicationController
   def index
     @users = User.all
 
+    @this_user = User.find(1)
+
     respond_to do |format|
       format.html # index.html.erb
+      format.js
       format.json { render json: @users }
     end
   end
@@ -14,14 +17,28 @@ class UsersController < ApplicationController
   # GET /users/1.json
   def show
     @user = User.find(params[:id])
-    @energy_data = @user.energy_data.order("created_at DESC").limit(10)
-    @dayTotals = @user.energy_data.order("created_at DESC").limit(30)
+    @energy_data = @user.energy_data.order("created_at DESC").limit(30)
+    @dayTotals = @user.consolidate_day
+    @days, @weekTotals = @user.consolidate_week
     @monthTotals = @user.monthSum
-    @days, @dayTotals = @user.consolidate_week
     @monthsArray = Array.new
+
+    puts @dayTotals
+
+    #green console
+    @em_monthTotals = @user.em_monthTotals
+    @em_weekTotals = @user.em_weekTotals
+    @em_dayTotals = @user.em_dayTotals
+
+    #finance console
+    @fi_monthTotals = @user.fi_monthTotals
+    @fi_weekTotals = @user.fi_weekTotals
+    @fi_dayTotals = @user.fi_dayTotals
+
 
     respond_to do |format|
       format.html # show.html.erb
+      format.js
       format.json { render json: @user }
     end
   end

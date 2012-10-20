@@ -1,3 +1,13 @@
+<%= form_tag users_path, :method => :get, :remote => true do %>
+  <p>
+    <%= submit_tag "Test", :name => nil, :class => "btn" %>
+  </p>
+<% end %>
+
+<div id='test'>
+</div>
+
+
 <h1>Listing users</h1>
 
 <table>

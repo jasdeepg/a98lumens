@@ -14,36 +14,21 @@ class User < ActiveRecord::Base
   attr_accessible :email, :name, :state_id
   has_many :energy_data, :class_name => "EnergyDatum", :foreign_key => "user_id"
   
+
+  ###################
+  # Performance data
+  ###################
   def monthSum
-  	months = (1..12).to_a
-  	@monthsTotal = Array.new
+  	last_month = self.energy_data.select("month").last
+    puts "LASTMONTH", last_month
+    months = (1..last_month.month).to_a
+  	@monthTotals = Array.new
 
   	months.each do |curMonth|
-  		@monthsTotal[curMonth-1] = [curMonth, self.energy_data.where("month=#{curMonth}").sum("power")]
+  		@monthTotals[curMonth-1] = [curMonth, self.energy_data.where("month=#{curMonth}").sum("power")]
   	end
 
-  	return @monthsTotal
-  end
-
-  # return array with day attributes for graph
-  def consolidate_day
-  	refDay = self.energy_data.select("day").last
-  	refDay = refDay.day
-  	refMonth = self.energy_data.select("month").last
-  	refMonth = refMonth.month
-  	refYear = self.energy_data.select("year").last
-  	refYear = refYear.year
-  	dayofInterest = self.energy_data.where("day=#{refDay} AND month=#{refMonth} AND year=#{refYear}").select("hour, power")
-  	dayArray = Array.new
-  	count = 0
-
-  	# create array with [hour, power]
-  	dayofInterest.each do |day|
-  		dayArray[count] = [day.hour, day.power]
-  		count = count + 1
-  	end
-
-  	return dayArray
+  	return @monthTotals
   end
 
   # return array with week attributes for graph
@@ -55,7 +40,7 @@ class User < ActiveRecord::Base
   	refMonth = refMonth.month
   	count = (0..6).to_a
   	@dateCount = Array.new
-  	@daySum = Array.new
+  	@weekTotals = Array.new
   	subCount = 0
 
   	count.each do |var|
@@ -73,26 +58,143 @@ class User < ActiveRecord::Base
   	arrayCount = 0
 
   	@dateCount.each do |day, month|
-  		@daySum[arrayCount] = [arrayCount, self.energy_data.where("day=#{day} AND month=#{month}").sum("power")]
+  		@weekTotals[arrayCount] = [arrayCount, self.energy_data.where("day=#{day} AND month=#{month}").sum("power")]
   		arrayCount = arrayCount + 1
   	end
 
-  	return @dateCount, @daySum
+    # return both because @weekTotals must be 0-indexed, @dateCount has actual dates
+  	return @dateCount, @weekTotals
+  end
+
+  # return array with day attributes for graph
+  def consolidate_day
+    refDay = self.energy_data.select("day").last
+    refDay = refDay.day
+    refMonth = self.energy_data.select("month").last
+    refMonth = refMonth.month
+    refYear = self.energy_data.select("year").last
+    refYear = refYear.year
+    dayofInterest = self.energy_data.where("day=#{refDay} AND month=#{refMonth} AND year=#{refYear}").select("hour, power")
+    @dayTotals = Array.new
+    count = 0
+
+    # create array with [hour, power]
+    dayofInterest.each do |day|
+      @dayTotals[count] = [day.hour, day.power]
+      count = count + 1
+    end
+
+    @dayTotals
   end
 
   #calculate overall power generated
   def calculate_overall_power_for
-  	self.energy_data.sum("power")
+  	self.energy_data.sum("power") # total in Wh
+  end
+
+  ###################
+  #  Constructor
+  ###################
+  
+  def genericConstructorGreen(tempArray)
+    @returnArray = Array.new
+    count = 0
+
+    puts tempArray
+
+    tempArray.each do |entry|
+      @returnArray[count] = [entry[0], calculate_emissions_for(entry[1])]
+      count = count + 1
+    end
+
+    @returnArray
+  end
+
+  def genericConstructorFinance(tempArray)
+    @returnArray = Array.new
+    count = 0
+
+    puts tempArray
+
+    tempArray.each do |entry|
+      @returnArray[count] = [entry[0], calculate_money_for(entry[1])]
+      count = count + 1
+    end
+
+    @returnArray
+  end
+
+  ###################
+  # Green data
+  ###################
+
+  def em_monthTotals
+    genericConstructorGreen(@monthTotals)
+  end
+
+  def em_weekTotals
+    genericConstructorGreen(@weekTotals)
+  end
+
+  def em_dayTotals
+    genericConstructorGreen(@dayTotals)
   end
 
   #calculate overall carbon emissions saved
-  def calculate_overall_emissions_for
-  	powerGenerated = calculate_overall_power_for
-  	emissionsConversion = 0.69/1000 #kg C02/Wh
+  def calculate_emissions_for(powerGenerated)
+  	emissionsConversion = 0.00069 #kg C02/Wh
 
   	powerGenerated*emissionsConversion #Wh * kg C02/Wh
   end
 
+  def calculate_overall_emissions_for
+    powerGenerated = calculate_overall_power_for
 
+    calculate_emissions_for(powerGenerated)
+  end
+
+  def calculate_overall_trees_for
+    treesConversion = 0.08 #trees/kgC02
+    amountC02 = calculate_overall_emissions_for
+
+    treesConversion*amountC02 #trees saved overall
+  end
+
+  def calculate_overall_cars_for
+    carConversion = (5.1*1000) #kg C02/year
+    amountC02 = calculate_overall_emissions_for
+
+    amountC02/carConversion #number of cars taken off road this _year_
+  end
+
+
+  ###################
+  # Finance data
+  ###################
+
+  #calculate overall carbon emissions saved
+  def calculate_money_for(powerGenerated)
+    moneyConversion = 0.126/1000 # 0.126 cents per kWh -- 0.000126 cents per Wh
+
+    powerGenerated*moneyConversion 
+  end
+
+  def calculate_overall_money_for
+    powerGenerated = calculate_overall_power_for
+
+    calculate_money_for(powerGenerated)
+  end
+
+  def fi_monthTotals
+    genericConstructorFinance(@monthTotals)
+  end
+
+  def fi_weekTotals
+    genericConstructorFinance(@weekTotals)
+  end
+
+  def fi_dayTotals
+    genericConstructorFinance(@dayTotals)
+  end
 
 end

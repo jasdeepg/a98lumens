@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   # GET /users/1.json
   def show
     @user = User.find(params[:id])
-    @energy_data = @user.energy_data.order("created_at DESC").limit(30)
+    @energy_data = @user.energy_data.order("created_at DESC").limit(10)
     @dayTotals = @user.consolidate_day
     @days, @weekTotals = @user.consolidate_week
     @monthTotals = @user.monthSum

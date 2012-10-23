@@ -13,8 +13,18 @@
 <body>
     <%= render 'layouts/header' %>
     <div class="container">
+      <p class="notice"><%= notice %></p>
+      <p class="alert"><%= alert %></p>
       <%= yield %>
       <%= render 'layouts/footer' %>
     </div>
+
+    <script type="text/javascript">
+      <% if alert.nil? %>
+        $(".alert").hide()
+      <% else %>
+        $(".alert").show()
+      <% end %>
+    </script>
 </body>
 </html>

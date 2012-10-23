@@ -1,11 +1,19 @@
 A98lumens::Application.routes.draw do
-  get "static_pages/home"
+  devise_for :users
 
-  get "static_pages/about"
+  ActiveAdmin.routes(self)
+
+  root :to => "static_pages#home"
+
+  match 'static_pages/about', :to=> "static_pages#about", :as => "about"
 
   resources :energy_data
 
   resources :users
+
+  match '/users/edit', :to => "devise/registrations#edit", :as => "edit_user_registration"
+  match '/users/new', :to => "devise/registrations#new", :as => "new_user_registration"
+
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

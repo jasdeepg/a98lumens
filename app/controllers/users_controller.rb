@@ -17,24 +17,25 @@ class UsersController < ApplicationController
   # GET /users/1.json
   def show
     @user = User.find(params[:id])
-    @energy_data = @user.energy_data.order("created_at DESC").limit(10)
-    @dayTotals = @user.consolidate_day
-    @days, @weekTotals = @user.consolidate_week
-    @monthTotals = @user.monthSum
-    @monthsArray = Array.new
+    puts @user.energy_data.nil?
+    if @user.energy_data.first.nil?
+      puts "pass"
+    else
+      @energy_data = @user.energy_data.order("created_at DESC").limit(10)
+      @dayTotals = @user.consolidate_day
+      @days, @weekTotals = @user.consolidate_week
+      @monthTotals = @user.monthSum
 
-    puts @dayTotals
+      #green console
+      @em_monthTotals = @user.em_monthTotals
+      @em_weekTotals = @user.em_weekTotals
+      @em_dayTotals = @user.em_dayTotals
 
-    #green console
-    @em_monthTotals = @user.em_monthTotals
-    @em_weekTotals = @user.em_weekTotals
-    @em_dayTotals = @user.em_dayTotals
-
-    #finance console
-    @fi_monthTotals = @user.fi_monthTotals
-    @fi_weekTotals = @user.fi_weekTotals
-    @fi_dayTotals = @user.fi_dayTotals
-
+      #finance console
+      @fi_monthTotals = @user.fi_monthTotals
+      @fi_weekTotals = @user.fi_weekTotals
+      @fi_dayTotals = @user.fi_dayTotals
+    end
 
     respond_to do |format|
       format.html # show.html.erb
@@ -66,7 +67,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
-        format.html { redirect_to @user, notice: 'User was successfully created.' }
+        format.html { redirect_to @user, notice: 'Welcome to the 98Lumens family!' }
         format.json { render json: @user, status: :created, location: @user }
       else
         format.html { render action: "new" }

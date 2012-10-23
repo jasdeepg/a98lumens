@@ -11,7 +11,10 @@
 #
 
 class User < ActiveRecord::Base
-  attr_accessible :email, :name, :state_id
+  devise :database_authenticatable, :recoverable, 
+         :rememberable, :trackable, :validatable
+  attr_accessible :name, :email, :password, :password_confirmation, 
+                  :remember_me
   has_many :energy_data, :class_name => "EnergyDatum", :foreign_key => "user_id"
   
 
@@ -100,7 +103,9 @@ class User < ActiveRecord::Base
     @returnArray = Array.new
     count = 0
 
-    puts tempArray
+    if tempArray.nil?
+      tempArray = [1,1]
+    end
 
     tempArray.each do |entry|
       @returnArray[count] = [entry[0], calculate_emissions_for(entry[1])]
@@ -114,7 +119,9 @@ class User < ActiveRecord::Base
     @returnArray = Array.new
     count = 0
 
-    puts tempArray
+    if tempArray.nil?
+      tempArray = [1,1]
+    end
 
     tempArray.each do |entry|
       @returnArray[count] = [entry[0], calculate_money_for(entry[1])]

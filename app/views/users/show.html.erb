@@ -66,15 +66,15 @@
           <td><%= number_with_precision(@user.calculate_overall_money_for, :precision =>2) %> dollars </td>
         </tr>
         <tr>
-          <th>Emissions captured</th>
+          <th>Equivalent emissions captured</th>
           <td><%= number_with_precision(@user.calculate_overall_emissions_for, :precision =>2) %> kg </td>
         </tr>
         <tr>
-          <th>Trees planted</th>
+          <th>Equivalent trees planted</th>
           <td><%= number_with_precision(@user.calculate_overall_trees_for, :precision =>2) %> trees</td>
         </tr>
         <tr>
-          <th>Cars taken off the road</th>
+          <th>Equivalent cars taken off the road</th>
           <td><%= number_with_precision(@user.calculate_overall_cars_for, :precision =>2) %> cars</td>
         </tr>
       </table>
@@ -190,15 +190,6 @@ $(function () {
       ],
       {
         xaxis: {
-          ticks: [
-            [0, "Monday"],
-            [1, "Tuesday"],
-            [2, "Wednesday"],
-            [3, "Thursday"],
-            [4, "Friday"],
-            [5, "Saturday"],
-            [6, "Sunday"],
-          ]
         }   
       }
      )
@@ -217,7 +208,6 @@ $(function () {
       ],
       {
         xaxis: {
-
         }   
       }
      )

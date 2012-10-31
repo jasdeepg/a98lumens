@@ -21,14 +21,21 @@ class User < ActiveRecord::Base
   # Performance data
   ###################
   def monthSum
-  	last_month = self.energy_data.select("month").last
-    puts "LASTMONTH", last_month
-    months = (1..last_month.month).to_a
+    t = Time.new
+
+  	last_entry = self.energy_data.where("month=#{t.month} and day=#{t.day}").last
+    puts "LASTMONTH", last_entry
+    months = (1..last_entry.month).to_a
+    days = (1..last_entry.day).to_a
   	@monthTotals = Array.new
 
   	months.each do |curMonth|
-  		@monthTotals[curMonth-1] = [curMonth, self.energy_data.where("month=#{curMonth}").sum("power")]
-  	end
+      if curMonth == last_entry.month
+        @monthTotals[curMonth-1] = [curMonth, self.energy_data.where(:month => curMonth, :day => 1..last_entry.day).sum("power")]
+      else
+    		@monthTotals[curMonth-1] = [curMonth, self.energy_data.where("month=#{curMonth}").sum("power")]
+  	  end
+    end
 
   	return @monthTotals
   end
@@ -36,20 +43,22 @@ class User < ActiveRecord::Base
   # return array with week attributes for graph
   def consolidate_week 
   	#grab last 7 days
-  	refDay = self.energy_data.select("day").last
-  	refDay = refDay.day
-  	refMonth = self.energy_data.select("month").last
-  	refMonth = refMonth.month
+    t = Time.new
+
+  	refEntry = self.energy_data.where(:day => t.day).last
+  	refDay = refEntry.day
+  	refMonth = refEntry.month
   	count = (0..6).to_a
   	@dateCount = Array.new
   	@weekTotals = Array.new
   	subCount = 0
 
+    #creating date array for weekTotals, assumes each month has 31 days
   	count.each do |var|
   		if (refDay - subCount) > 0
   			@dateCount << [refDay - subCount, refMonth]
   		else
-  			refDay = 31
+        refDay = 31
   			refMonth = refMonth - 1
   			subCount = 0
   			@dateCount << [refDay - subCount, refMonth]
@@ -60,7 +69,7 @@ class User < ActiveRecord::Base
   	arrayCount = 0
 
   	@dateCount.each do |day, month|
-  		@weekTotals[arrayCount] = [arrayCount, self.energy_data.where("day=#{day} AND month=#{month}").sum("power")]
+  		@weekTotals[arrayCount] = [day, self.energy_data.where("day=#{day} AND month=#{month}").sum("power")]
   		arrayCount = arrayCount + 1
   	end
 
@@ -70,11 +79,13 @@ class User < ActiveRecord::Base
 
   # return array with day attributes for graph
   def consolidate_day
-    refDay = self.energy_data.select("day").last
+    t = Time.new
+
+    refDay = self.energy_data.where(:day => t.day).select("day").last
     refDay = refDay.day
-    refMonth = self.energy_data.select("month").last
+    refMonth = self.energy_data.where(:month => t.month).select("month").last
     refMonth = refMonth.month
-    refYear = self.energy_data.select("year").last
+    refYear = self.energy_data.where(:year => t.year).select("year").last
     refYear = refYear.year
     dayofInterest = self.energy_data.where("day=#{refDay} AND month=#{refMonth} AND year=#{refYear}").select("hour, power")
     @dayTotals = Array.new
@@ -91,7 +102,9 @@ class User < ActiveRecord::Base
 
   #calculate overall power generated
   def calculate_overall_power_for
-  	self.energy_data.sum("power") # total in Wh
+    t = Time.new
+
+  	self.energy_data.where(:year=>t.year, :month=> (1..(t.month))).sum("power") # total in Wh
   end
 
   ###################

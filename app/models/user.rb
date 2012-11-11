@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :recoverable, 
          :rememberable, :trackable, :validatable
   attr_accessible :name, :email, :password, :location, :password_confirmation, 
-                  :remember_me
+                  :remember_me, :created_at
   has_many :energy_data, :class_name => "EnergyDatum", :foreign_key => "user_id"
 
   ###################

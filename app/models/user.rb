@@ -107,6 +107,26 @@ class User < ActiveRecord::Base
   	self.energy_data.where(:year=>t.year, :month=> (1..(t.month))).sum("power") # total in Wh
   end
 
+  #calculate this week's power
+  def calculate_week_power_for
+    dates, totals = consolidate_week
+
+    weekPowerCount = 0
+
+    totals.each do |index, total|
+      weekPowerCount+=total
+    end
+
+    weekPowerCount
+  end
+
+  #calculate today's power
+  def calculate_day_power_for
+    t = Time.new
+
+    self.energy_data.where(:year=>t.year, :month=> t.month, :day=>t.day).sum("power") # total in Wh
+  end
+
   ###################
   #  Constructor
   ###################

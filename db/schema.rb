@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121023193821) do
+ActiveRecord::Schema.define(:version => 20121111014450) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -28,6 +28,17 @@ ActiveRecord::Schema.define(:version => 20121023193821) do
   add_index "active_admin_comments", ["namespace"], :name => "index_active_admin_comments_on_namespace"
   add_index "active_admin_comments", ["resource_type", "resource_id"], :name => "index_admin_notes_on_resource_type_and_resource_id"
 
+  create_table "chores", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.integer  "user_id"
+    t.date     "periodStart"
+    t.time     "timeStart"
+    t.datetime "testTime"
+    t.datetime "sample"
+  end
+
   create_table "energy_data", :force => true do |t|
     t.integer  "month"
     t.integer  "day"
@@ -37,6 +48,29 @@ ActiveRecord::Schema.define(:version => 20121023193821) do
     t.integer  "user_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "panel_data", :force => true do |t|
+    t.integer  "year"
+    t.integer  "month"
+    t.integer  "day"
+    t.integer  "hour"
+    t.integer  "minute"
+    t.float    "power"
+    t.integer  "panel_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "panels", :force => true do |t|
+    t.float    "power"
+    t.string   "code"
+    t.integer  "date_purchased"
+    t.integer  "date_online"
+    t.integer  "user_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+    t.integer  "panel_ref"
   end
 
   create_table "users", :force => true do |t|

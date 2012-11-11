@@ -1,6 +1,6 @@
 jQuery(function($) {
 
-  $("#day").click(function() {
+/* $("#day").click(function() {
 
   	var $div1 = $('#day-graph');
   	var $div2 = $('#week-graph');
@@ -60,5 +60,5 @@ jQuery(function($) {
   		$div3.show();
   	}
   //  alert("Thanks for clicking me");
-  });
+  });*/
 });

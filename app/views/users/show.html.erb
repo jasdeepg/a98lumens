@@ -1,42 +1,23 @@
-<div id="header">
-  <div id="header-left" style="float:left;display:block;text-alight:right;width:50%">
-  </div>
-  <div id="header-right" style="float:right;display:block;text-alight:left;width:50%">
-      <h1><%= @user.Location %></h1>
-  </div>
-</div>
-
-
+<!-- user row -->
 <div class = "row-fluid">
-  <div class = "span9">
-    <div class= "span2">
+    <div class= "span2" id="user-pic">
       <p>
         <%= image_tag avatar_url(@user) %>
       </p>
-      <p>
-        <%= @user.name %>
-      </p>
-
-      <p>
-        <%= @user.email %>
-      </p>
-      <button class= "btn btn-medium btn-block" id="perf">Performance</button>
-      <button class= "btn btn-medium btn-block" id="finance">Finance</button>
-      <button class= "btn btn-medium btn-block" id="green">Environment</button>
-    
-      <br>
-      <table class="table">
-        <tr>
-          <th># panels</th>
-          <td>1</td>
-        </tr>
-        <tr>
-          <th>Date purchased</th>
-          <td>1/2012</td>
-        </tr>
-      </table>
     </div>
 
+    <div class="span4" id="user-name">
+        <p class="lead" id="name-text">
+          <h4><%= @user.name %></h4>
+        </p>
+        <p>
+          Joined: <%= @user.created_at.month %>-<%= @user.created_at.day %>-<%= @user.created_at.year %>
+        </p>
+    </div>
+</div>
+
+  <!-- chart and highlight row -->
+  <div class="row-fluid">
     <div class="span9">
       <p>
         <a id="day" href="#">Day</a> /
@@ -52,6 +33,13 @@
   </div>
 </div>
 
+      <div class="btn-group btn-group-vertical">
+        <button class= "btn btn-block" id="perf">Performance</button>
+        <button class= "btn btn-block" id="finance">Finance</button>
+        <button class= "btn btn-block" id="green">Environment</button>
+      </div>
+
+<!-- Table for all metrics
 <div class="row-fluid">
   <div class="span6 offset2">
     <p>
@@ -79,6 +67,8 @@
         </tr>
       </table>
     </p>
+-->
+
 <!--    <p>
     	<% if @user.energy_data.any? %>
           <h2> Last 10 energy-producing hours </h2>
@@ -94,8 +84,6 @@
           </table>
         <% end %>
     </p> -->
-  </div>
-</div>
 
 <% javascript_tag do %>
  
@@ -106,6 +94,9 @@
 $(function () {
 
     var exValue = 1;
+    var green = false;
+    var finance = false;
+    var perf = true;
 
      var xyData = <%= @monthTotals.to_json %>;
      var chartLabel = "Solar output (Wh)"
@@ -113,7 +104,34 @@ $(function () {
      var dayXY = <%= @dayTotals.to_json %>;
      $('#header-left').html('<h1>Performance</h1>');
 
+     var placeholder = $("#year-graph");
+     var data = xyData;
+     var options = {
+        lines: {show:true},
+        xaxis: {tickDecimals:0, tickSize:1},
+        label: chartLabel
+      };
+
+      $('#day').click(function(){
+        data = switchProf(0);
+        doThis();
+      });
+
+      $('#week').click(function(){
+        data = switchProf(1);
+        doThis();
+      });
+
+      $('#year').click(function(){
+        data = switchProf(2);
+        doThis();
+      });
+
+
      $('#green').click(function() {
+      green = true;
+      perf = false;
+      finance = false;
       xyData  = <%= @em_monthTotals.to_json %>;
       weekXY = <%= @em_weekTotals.to_json %>;
       dayXY = <%= @em_dayTotals.to_json %>;
@@ -123,6 +141,9 @@ $(function () {
      });
 
      $('#finance').click(function() {
+      green = false;
+      perf = false;
+      finance = true;
       xyData  = <%= @fi_monthTotals.to_json %>;
       weekXY = <%= @fi_weekTotals.to_json %>;
       dayXY = <%= @fi_dayTotals.to_json %>;
@@ -132,6 +153,9 @@ $(function () {
      });
 
     $('#perf').click(function() {
+      green = false;
+      perf = true;
+      finance = false;
       xyData  = <%= @monthTotals.to_json %>;
       weekXY = <%= @weekTotals.to_json %>;
       dayXY = <%= @dayTotals.to_json %>;
@@ -142,41 +166,56 @@ $(function () {
 
      doThis();
 
+  function switchProf(timeGran) {
+    var dataReturn = [];
+    if (perf) {
+      switch (timeGran) {
+        case 0:    //day
+          dataReturn = <%= @dayTotals.to_json %>
+          break;
+        case 1:    //month
+          dataReturn = <%= @weekTotals.to_json %>
+          break;
+        case 2:    //year
+          dataReturn = <%= @monthTotals.to_json %>
+          break;
+      } 
+    }
+    else if (green) {
+      switch (timeGran) {
+        case 0:    //day
+          dataReturn = <%= @em_dayTotals.to_json %>
+          break;
+        case 1:    //month
+          dataReturn = <%= @em_weekTotals.to_json %>
+          break;
+        case 2:    //year
+          dataReturn = <%= @em_monthTotals.to_json %>
+          break;
+      } 
+    }
+    else {
+      switch (timeGran) {
+        case 0:    //day
+          dataReturn = <%= @fi_dayTotals.to_json %>
+          break;
+        case 1:    //month
+          dataReturn = <%= @fi_weekTotals.to_json %>
+          break;
+        case 2:    //year
+          dataReturn = <%= @fi_monthTotals.to_json %>
+          break;
+      } 
+    }
+
+    return dataReturn;
+  }
+
   function doThis() {
 
-     $.plot($("#year-graph"),
-        [
-         {
-           label: chartLabel,
-           data: xyData,
-           lines: {
-             show: true,
-             barWidth: 0.5,
-             align: "center"
-           }   
-         }
-      ],
-      {
-        xaxis: {
-          ticks: [
-            [1, "Jan"],
-            [2, "Feb"],
-            [3, "Mar"],
-            [4, "Apr"],
-            [5, "May"],
-            [6, "Jun"],
-            [7, "Jul"],
-            [8, "Aug"],
-            [9, "Sep"],
-            [10, "Oct"],
-            [11, "Nov"],
-            [12, "Dec"],
-          ]
-        }   
-      }
-     )
+     $.plot(placeholder,[data], options);
 
-     $.plot($("#week-graph"),
+     /*$.plot($("#week-graph"),
         [
          {
            label: chartLabel,
@@ -210,8 +249,8 @@ $(function () {
         xaxis: {
         }   
       }
-     )
-  }
+     )*/
+  } 
 });
 </script>
 

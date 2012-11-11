@@ -26,6 +26,9 @@ class UsersController < ApplicationController
       @days, @weekTotals = @user.consolidate_week
       @monthTotals = @user.monthSum
 
+      #totals
+      @weekPowerTotal = @user.calculate_week_power_for
+
       #green console
       @em_monthTotals = @user.em_monthTotals
       @em_weekTotals = @user.em_weekTotals

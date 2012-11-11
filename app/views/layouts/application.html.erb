@@ -9,16 +9,24 @@
   <%= javascript_include_tag "rails.js" %>
   <%= javascript_include_tag "flot-test.js" %>
   <%= javascript_include_tag "updateHTML.js" %>
+  <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
 </head>
 <body>
+  <section id="header">
     <%= render 'layouts/header' %>
+  </section>
+  <hr>
+  <section id="content">
     <div class="container">
       <p class="notice"><%= notice %></p>
       <p class="alert"><%= alert %></p>
       <%= yield %>
-      <%= render 'layouts/footer' %>
-    </div>
+          </div>
 
+          <br>
+          
+      <%= render 'layouts/footer' %>
+  </section>
     <script type="text/javascript">
       <% if alert.nil? %>
         $(".alert").hide()

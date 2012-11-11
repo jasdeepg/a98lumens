@@ -1,5 +1,6 @@
 <!-- user row -->
 <div class = "row-fluid">
+
     <div class= "span2" id="user-pic">
       <p>
         <%= image_tag avatar_url(@user) %>
@@ -14,24 +15,34 @@
           Joined: <%= @user.created_at.month %>-<%= @user.created_at.day %>-<%= @user.created_at.year %>
         </p>
     </div>
+
 </div>
 
   <!-- chart and highlight row -->
-  <div class="row-fluid">
-    <div class="span9">
-      <p>
-        <a id="day" href="#">Day</a> /
-        <a id="week" href="#">Week</a> /
-        <a id="year" href="#">Year</a>
-      </p>
-      <p>
-        <div id="year-graph", style="width:600px;height:300px"></div>
-        <div id="week-graph", style="width:600px;height:300px;display:none"></div>
-        <div id="day-graph", style="width:600px;height:300px;display:none"></div>
-      </p>
-    </div>
+<div class="row-fluid">
+
+      <div class="span3">
+        <table id="sidebar-graph" rel="tooltip" title="some key insights">
+          <tr><td><%= image_tag("blue_graph.png") %></td></tr>
+          <tr><td><%= image_tag("blue_graph.png") %></td></tr>
+          <tr><td><%= image_tag("blue_graph.png") %></td></tr>
+        </table>
+      </div>
+
+      <div id="range-buttons" class="span4">
+        <p>
+          <div class="btn-group" data-toggle="buttons-radio">
+            <button type="button" class="btn" id="day">Day</button>
+            <button type="button" class="btn" id="week" >Week</button>
+            <button type="button" class="btn" id="year">Year</button>
+          </div>
+        </p>
+        <p>
+          <div id="year-graph", style="width:600px;height:387px"></div>
+        </p>
+      </div>
+
   </div>
-</div>
 
       <div class="btn-group btn-group-vertical">
         <button class= "btn btn-block" id="perf">Performance</button>
@@ -85,32 +96,40 @@
         <% end %>
     </p> -->
 
+
 <% javascript_tag do %>
  
 <% end %>
 
 <script type="text/javascript">
-
+$(document).ready(
 $(function () {
 
     var exValue = 1;
     var green = false;
     var finance = false;
     var perf = true;
+    var sideGraphStat = $("#sidebar-graph");
+    var sideGraphTD = $("#sample")
 
      var xyData = <%= @monthTotals.to_json %>;
-     var chartLabel = "Solar output (Wh)"
+     var chartLabel = "Solar output (Wh)";
      var weekXY = <%= @weekTotals.to_json %>;
      var dayXY = <%= @dayTotals.to_json %>;
-     $('#header-left').html('<h1>Performance</h1>');
 
      var placeholder = $("#year-graph");
      var data = xyData;
      var options = {
         lines: {show:true},
+        label: chartLabel,
         xaxis: {tickDecimals:0, tickSize:1},
-        label: chartLabel
       };
+
+      doThis();
+
+      var tooltipOptions = {text: "HA"};
+
+      sideGraphStat.tooltip();
 
       $('#day').click(function(){
         data = switchProf(0);
@@ -132,11 +151,19 @@ $(function () {
       green = true;
       perf = false;
       finance = false;
-      xyData  = <%= @em_monthTotals.to_json %>;
-      weekXY = <%= @em_weekTotals.to_json %>;
-      dayXY = <%= @em_dayTotals.to_json %>;
-      chartLabel = "Emissions captured (kg C02)"
-      $('#header-left').html('<h1>Environment</h1>')
+
+      //sideGraphTD.css("background-image", "url(green_graph.png)")
+      sideGraphStat.html('<tr><td><%= image_tag("green_graph.png") %><span id="hl1"><%= number_with_precision(@weekPowerTotal, :precision=>2) %></span></td></tr>');
+      sideGraphStat.append('<tr><td><%= image_tag("green_graph.png") %></td></tr>');
+      sideGraphStat.append('<tr><td><%= image_tag("green_graph.png") %></td></tr>');
+
+      data  = <%= @em_monthTotals.to_json %>;
+      chartLabel = "Emissions captured (kg C02)";
+      options = {
+        lines: {show:true},
+        xaxis: {tickDecimals:0, tickSize:1},
+        label: chartLabel,
+      };
       doThis();
      });
 
@@ -144,11 +171,18 @@ $(function () {
       green = false;
       perf = false;
       finance = true;
-      xyData  = <%= @fi_monthTotals.to_json %>;
-      weekXY = <%= @fi_weekTotals.to_json %>;
-      dayXY = <%= @fi_dayTotals.to_json %>;
-      chartLabel = "Money accrued (dollars)"
-      $('#header-left').html('<h1>Finance</h1>')
+
+      sideGraphStat.html('<tr><td><%= image_tag("red_graph.png") %></td></tr>');
+      sideGraphStat.append('<tr><td><%= image_tag("red_graph.png") %></td></tr>');
+      sideGraphStat.append('<tr><td><%= image_tag("red_graph.png") %></td></tr>');
+
+      data  = <%= @fi_monthTotals.to_json %>;
+      chartLabel = "Money accrued (dollars)";
+      options = {
+        lines: {show:true},
+        xaxis: {tickDecimals:0, tickSize:1},
+        label: chartLabel,
+      };
       doThis();
      });
 
@@ -156,15 +190,20 @@ $(function () {
       green = false;
       perf = true;
       finance = false;
-      xyData  = <%= @monthTotals.to_json %>;
-      weekXY = <%= @weekTotals.to_json %>;
-      dayXY = <%= @dayTotals.to_json %>;
-      chartLabel = "Solar output (Wh)"
-      $('#header-left').html('<h1>Performance</h1>')
+
+      sideGraphStat.html('<tr><td><%= image_tag("blue_graph.png") %></td></tr>');
+      sideGraphStat.append('<tr><td><%= image_tag("blue_graph.png") %></td></tr>');
+      sideGraphStat.append('<tr><td><%= image_tag("blue_graph.png") %></td></tr>');
+
+      data  = <%= @monthTotals.to_json %>;
+      chartLabel = "Solar output (Wh)";
+      options = {
+        lines: {show:true},
+        xaxis: {tickDecimals:0, tickSize:1},
+        label: chartLabel,
+      };
       doThis();
      });
-
-     doThis();
 
   function switchProf(timeGran) {
     var dataReturn = [];
@@ -213,7 +252,7 @@ $(function () {
 
   function doThis() {
 
-     $.plot(placeholder,[data], options);
+     $.plot(placeholder,[data], [options]);
 
      /*$.plot($("#week-graph"),
         [
@@ -251,7 +290,5 @@ $(function () {
       }
      )*/
   } 
-});
+}));
 </script>
-
-<%= link_to 'Back', users_path %>

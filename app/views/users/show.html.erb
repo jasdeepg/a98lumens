@@ -44,13 +44,14 @@
 
   </div>
 
+<!-- Table for all metrics
+
       <div class="btn-group btn-group-vertical">
         <button class= "btn btn-block" id="perf">Performance</button>
         <button class= "btn btn-block" id="finance">Finance</button>
         <button class= "btn btn-block" id="green">Environment</button>
       </div>
 
-<!-- Table for all metrics
 <div class="row-fluid">
   <div class="span6 offset2">
     <p>
@@ -220,32 +221,7 @@ $(function () {
           break;
       } 
     }
-    else if (green) {
-      switch (timeGran) {
-        case 0:    //day
-          dataReturn = <%= @em_dayTotals.to_json %>
-          break;
-        case 1:    //month
-          dataReturn = <%= @em_weekTotals.to_json %>
-          break;
-        case 2:    //year
-          dataReturn = <%= @em_monthTotals.to_json %>
-          break;
-      } 
-    }
-    else {
-      switch (timeGran) {
-        case 0:    //day
-          dataReturn = <%= @fi_dayTotals.to_json %>
-          break;
-        case 1:    //month
-          dataReturn = <%= @fi_weekTotals.to_json %>
-          break;
-        case 2:    //year
-          dataReturn = <%= @fi_monthTotals.to_json %>
-          break;
-      } 
-    }
+  }
 
     return dataReturn;
   }

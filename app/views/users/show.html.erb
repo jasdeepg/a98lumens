@@ -1,4 +1,6 @@
 <!-- user row -->
+
+<div class = "dashboard">
 <div class = "row-fluid">
 
     <div class= "span2" id="user-pic">
@@ -27,35 +29,50 @@
 
   <!-- chart and highlight row -->
 <div class="row-fluid">
-
-      <div class="span3">
-        <table id="sidebar-graph">
-          <tr id="sun-hl" rel="tooltip" title="kWh is the unit of measurement for electricity. Your panel is responsible for <%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %> of renewable energy over the duration of its operation.">
-            <td><h1><%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></h1></td>
-          </tr>
-          <tr id="dollar-hl" rel="tooltip" title="The clean energy produced by your panel is being sold to a local utility and has generated $<%= number_to_human(@user.calculate_overall_money_for, :precision => 2) %> for you.">
-            <td><h1>$<%= number_to_human(@user.calculate_overall_money_for, :precision => 4) %></h1></td>
-          </tr>
-          <tr id="green-hl" rel="tooltip" title="The dirty energy replaced by your panel is equivalent to planting <%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %>.">
-            <td><h1><%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %></h1></td>
-          </tr>
-        </table>
-      </div>
-
-      <div id="range-buttons" class="span8 hidden-phone">
-        <div class="graph-title"><p class="lead">Clean energy produced by your solar panel (Wh)</p></div>
+        <div class="graph-title"><p class="lead">Clean energy produced by your solar panel (kWh)</p></div>
         <p>
           <div class="btn-group  pull-right" data-toggle="buttons-radio">
-            <button type="button" class="btn" id="day">Day</button>
-            <button type="button" class="btn" id="week" >Week</button>
-            <button type="button" class="btn" id="year">Year</button>
+            <button type="button" class="btn" id="day">Today</button>
+            <button type="button" class="btn" id="month" >Last 30 days</button>
+            <button type="button" class="btn" id="year">This year</button>
           </div>
         </p>
         <p>
-          <div id="year-graph", style="width:700px;height:387px"></div>
+          <div id="year-graph" style="width:100%;height:400px;"></div>
         </p>
+  </div>
+
+  <div class="row-fluid highlight-boxes">
+      <div class="highlight-box" id="sun-hl" title="kWh is the unit of measurement for electricity. Your panel is responsible for <%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %> of renewable energy over the duration of its operation.">
+        <div class='highlight-banner'>
+          <div class="highlight"><%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></div>
+          <div class="sub-highlight">Total energy produced</div>
+        </div>
+      </div>
+      <div class="vertical-space"></div>
+      <div class="highlight-box" id="dollar-hl" title="The clean energy produced by your panel is being sold to a local utility and has generated $<%= number_to_human(@user.calculate_overall_money_for, :precision => 2) %> for you.">
+        <div class='highlight-banner'>
+          <div class="highlight">$<%= number_to_human(@user.calculate_overall_money_for, :precision => 4) %></div>
+          <div class="sub-highlight">Equivalent money generated</div>
+        </div>
+      </div>
+      <div class="vertical-space"></div>
+      <div class="highlight-box" id="green-hl" title="The dirty energy replaced by your panel is equivalent to planting <%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %>.">
+        <div class='highlight-banner'>
+          <div class="highlight"><%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %></div>
+          <div class="sub-highlight">Equivalent trees planted</div>
+        </div>
       </div>
 
+     <!--   <table id="sidebar-graph">
+          <td id="sun-hl" rel="tooltip" title="kWh is the unit of measurement for electricity. Your panel is responsible for <%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %> of renewable energy over the duration of its operation.">
+            <h1><%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></h1></td>
+          <td id="dollar-hl" rel="tooltip" title="The clean energy produced by your panel is being sold to a local utility and has generated $<%= number_to_human(@user.calculate_overall_money_for, :precision => 2) %> for you.">
+            <h1>$<%= number_to_human(@user.calculate_overall_money_for, :precision => 4) %></h1></td>
+          <td id="green-hl" rel="tooltip" title="The dirty energy replaced by your panel is equivalent to planting <%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %>.">
+            <h1><%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %></h1></td>
+          </tr>
+        </table> -->
   </div>
 
 <!-- Table for all metrics
@@ -111,6 +128,8 @@
         <% end %>
     </p> -->
 
+</div>
+
 
 <% javascript_tag do %>
  
@@ -138,22 +157,27 @@ $(function () {
           points: {show:false},
           bars: {show:true,
             align: "center",
-            barWidth: 21*(24 * 60 * 60 * 1000)}, //#*day
+            barWidth: 21*(24 * 60 * 60 * 1000),
+            lineWidth:0,
+            fillColor: "rgba(68, 177, 217, 0.75)"}, //#*day
           xaxis: {
-          mode: "time",
-          timeformat: "%b",
-          monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            mode: "time",
+            timeformat: "%b",
+            monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            tickLength:0,
           },
           grid: {hoverable:true, 
                 clickable:true, 
                 autohighlight:true},
           yaxis: {
-            show:false
+            show:true,
+            tickLength:0
           }
           //timeformat: "%H %p",
           //twelveHourClock: true}
         };
 
+      var plot = $.plot(placeholder,[data], options);
 
       $('#sun-hl').tooltip();
       $('#dollar-hl').tooltip();
@@ -164,41 +188,52 @@ $(function () {
         options = {
           bars: {show:true,
             align: "center",
-            barWidth: 0.03*(24 * 60 * 60 * 1000)},
+            barWidth: 0.03*(24 * 60 * 60 * 1000),
+            lineWidth:0,
+            fillColor: "rgba(68, 177, 217, 0.75)"},
           xaxis: {
-          mode: "time",
-          //timeformat: "%m"
-          //timeformat: "%H %p",
-          twelveHourClock: true},
+            mode: "time",
+            //timeformat: "%m"
+            //timeformat: "%H %p",
+            twelveHourClock: true,
+            tickLength:0
+          },
           grid: {hoverable:true, 
                 clickable:true, 
                 autohighlight:true},
           yaxis: {
-            show:false
+            show:true,
+            tickLength:0
           }
         };
 
         doThis();
       });
 
-      $('#week').click(function(){
+      $('#month').click(function(){
         data = switchProf(1);
+        //alert(data);
         options = {
           bars: {show:true,
             align: "center",
-            barWidth: 0.8*(24 * 60 * 60 * 1000)},
+            barWidth: 0.8*(24 * 60 * 60 * 1000),
+            lineWidth:0,
+            fillColor: "rgba(68, 177, 217, 0.75)"},
           xaxis: {
-          mode: "time",
-          //timeformat: "%m"
-          timeformat: "%b %d",
-          dayNames: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+            mode: "time",
+            //timeformat: "%m"
+            timeformat: "%b-%d",
+            dayNames: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            tickLength:0,
           //twelveHourClock: true}
-          },
+            },
           grid: {hoverable:true, 
                 clickable:true, 
-                autohighlight:true},
+                autohighlight:true
+              },
           yaxis: {
-            show:false
+            show:true,
+            tickLength:0
           }
         };
         doThis();
@@ -209,11 +244,14 @@ $(function () {
         options = {
           bars: {show:true,
             align: "center",
-            barWidth: 21*(24 * 60 * 60 * 1000)},
+            barWidth: 21*(24 * 60 * 60 * 1000),
+            lineWidth:0,
+            fillColor: "rgba(68, 177, 217, 0.75)"},
           xaxis: {
-          mode: "time",
-          timeformat: "%b",
-          monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            mode: "time",
+            timeformat: "%b",
+            monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            tickLength:0,
           //timeformat: "%H %p",
           //twelveHourClock: true}
           },
@@ -221,7 +259,8 @@ $(function () {
                   clickable:true, 
                   autohighlight:true},
           yaxis: {
-            show:false
+            show:true,
+            tickLength:0
           }
         };
         doThis();
@@ -247,9 +286,9 @@ $(function () {
 
 //redraws canvas
   function doThis() {
-     placeholder.hide();
-     $.plot(placeholder,[data], options).draw();
-     placeholder.fadeIn(200);
+     //placeholder.css("display","none");
+     $.plot(placeholder,[data], options);
+     //placeholder.fadeIn(200);
   } 
 
   //event listeners
@@ -280,7 +319,7 @@ $(function () {
                         y = item.datapoint[1].toFixed(2);
                     
                     showTooltip(item.pageX, item.pageY,
-                                y + " Wh");
+                                y + " kWh");
                 }
             }
             else {
@@ -293,7 +332,11 @@ $(function () {
     placeholder.bind("plotclick", function(event, pos, item) {
       //alert('woo');
     })
-
-     $.plot(placeholder,[data], options).draw();
+    
+    placeholder.resize(function () {
+      /*  $("body").prepend("<div>Placeholder is now "
+                           + $(this).width() + "x" + $(this).height()
+                           + " pixels</div>"); */
+    });
 }));
 </script>

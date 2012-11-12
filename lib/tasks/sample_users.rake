@@ -5,7 +5,7 @@ namespace :db do
   task team_data: :environment do
     require 'csv'
 
-    CSV.foreach("/Users/bhander/Dropbox/workspace/rails_projects/a98lumens/public/jasdeep.csv") do |row|
+    CSV.foreach("public/jasdeep.csv") do |row|
       puts [row[0], row[1], row[2], row[3]].join(',')
       EnergyDatum.create(
         :month => row[0],
@@ -30,7 +30,7 @@ namespace :db do
     # CSV.foreach("/Users/bhander/Dropbox/workspace/rails_projects/a98lumens/public/faran.csv") do |row|
     #   puts [row[0], row[1], row[2], row[3]].join(',')
     #    EnergyDatum.create(
-    #     :month => row[0],
+    #     :month =tea> row[0],
     #     :day => row[1],
     #     :year => 2012,
     #     :hour => row[2],

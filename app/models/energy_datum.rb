@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: energy_data
+#
+#  id         :integer          not null, primary key
+#  month      :integer
+#  day        :integer
+#  year       :integer
+#  hour       :integer
+#  power      :float
+#  user_id    :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class EnergyDatum < ActiveRecord::Base
   attr_accessible :day, :hour, :month, :power, :user_id, :year
   belongs_to :user

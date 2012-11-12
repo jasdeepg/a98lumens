@@ -2,19 +2,30 @@
 #
 # Table name: users
 #
-#  id         :integer          not null, primary key
-#  name       :string(255)
-#  email      :string(255)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  state_id   :integer
+#  id                     :integer          not null, primary key
+#  name                   :string(255)
+#  email                  :string(255)
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  encrypted_password     :string(255)      default(""), not null
+#  reset_password_token   :string(255)
+#  reset_password_sent_at :datetime
+#  remember_created_at    :datetime
+#  sign_in_count          :integer          default(0)
+#  current_sign_in_at     :datetime
+#  last_sign_in_at        :datetime
+#  current_sign_in_ip     :string(255)
+#  last_sign_in_ip        :string(255)
+#  superadmin             :boolean          default(FALSE), not null
+#  Location               :string(255)
+#  panel_zip              :string(255)
 #
 
 class User < ActiveRecord::Base
   devise :database_authenticatable, :recoverable, 
          :rememberable, :trackable, :validatable
   attr_accessible :name, :email, :password, :location, :password_confirmation, 
-                  :remember_me, :created_at
+                  :remember_me, :created_at, :panel_zip
   has_many :energy_data, :class_name => "EnergyDatum", :foreign_key => "user_id"
 
   ###################
@@ -31,9 +42,9 @@ class User < ActiveRecord::Base
 
   	months.each do |curMonth|
       if curMonth == last_entry.month
-        @monthTotals[curMonth-1] = [curMonth, self.energy_data.where(:month => curMonth, :day => 1..last_entry.day).sum("power")]
+        @monthTotals[curMonth-1] = [Time.utc(2012,curMonth).to_i*1000, self.energy_data.where(:month => curMonth, :day => 1..last_entry.day).sum("power")]
       else
-    		@monthTotals[curMonth-1] = [curMonth, self.energy_data.where("month=#{curMonth}").sum("power")]
+    		@monthTotals[curMonth-1] = [Time.utc(2012,curMonth).to_i*1000, self.energy_data.where("month=#{curMonth}").sum("power")]
   	  end
     end
 
@@ -45,7 +56,7 @@ class User < ActiveRecord::Base
   	#grab last 7 days
     t = Time.new
 
-  	refEntry = self.energy_data.where(:day => t.day).last
+  	refEntry = self.energy_data.where(:month => t.month, :day => t.day).last
   	refDay = refEntry.day
   	refMonth = refEntry.month
   	count = (0..6).to_a
@@ -69,7 +80,8 @@ class User < ActiveRecord::Base
   	arrayCount = 0
 
   	@dateCount.each do |day, month|
-  		@weekTotals[arrayCount] = [day, self.energy_data.where("day=#{day} AND month=#{month}").sum("power")]
+      temp_Obj = self.energy_data.where(:day=>day, :month=>month).last
+  		@weekTotals[arrayCount] = [Time.utc(temp_Obj.year, temp_Obj.month, temp_Obj.day).to_i*1000, self.energy_data.where("day=#{day} AND month=#{month}").sum("power")]
   		arrayCount = arrayCount + 1
   	end
 
@@ -87,13 +99,13 @@ class User < ActiveRecord::Base
     refMonth = refMonth.month
     refYear = self.energy_data.where(:year => t.year).select("year").last
     refYear = refYear.year
-    dayofInterest = self.energy_data.where("day=#{refDay} AND month=#{refMonth} AND year=#{refYear}").select("hour, power")
+    dayofInterest = self.energy_data.where(:year => t.year, :month => t.month, :day => t.day, :hour => (1..(t.hour)))
     @dayTotals = Array.new
     count = 0
 
     # create array with [hour, power]
     dayofInterest.each do |day|
-      @dayTotals[count] = [day.hour, day.power]
+      @dayTotals[count] = [Time.utc(day.year,day.month,day.day,day.hour).to_i*1000, day.power]
       count = count + 1
     end
 
@@ -129,8 +141,7 @@ class User < ActiveRecord::Base
 
   ###################
   #  Constructor
-  ###################
-  
+    
   def genericConstructorGreen(tempArray)
     @returnArray = Array.new
     count = 0

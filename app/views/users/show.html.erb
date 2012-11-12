@@ -7,13 +7,20 @@
       </p>
     </div>
 
-    <div class="span4" id="user-name">
+    <div class="span3" id="user-name">
         <p class="lead" id="name-text">
           <h4><%= @user.name %></h4>
         </p>
         <p>
           Joined: <%= @user.created_at.month %>-<%= @user.created_at.day %>-<%= @user.created_at.year %>
+          <br>
+          Location of solar panel: <%= @location %>
         </p>
+    </div>
+
+    <div id="weather">
+      <%= @location %>
+      <%= @weather %>
     </div>
 
 </div>
@@ -22,23 +29,30 @@
 <div class="row-fluid">
 
       <div class="span3">
-        <table id="sidebar-graph" rel="tooltip" title="some key insights">
-          <tr><td><%= image_tag("blue_graph.png") %></td></tr>
-          <tr><td><%= image_tag("blue_graph.png") %></td></tr>
-          <tr><td><%= image_tag("blue_graph.png") %></td></tr>
+        <table id="sidebar-graph">
+          <tr id="sun-hl" rel="tooltip" title="kWh is the unit of measurement for electricity. Your panel is responsible for <%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %> of renewable energy over the duration of its operation.">
+            <td><h1><%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></h1></td>
+          </tr>
+          <tr id="dollar-hl" rel="tooltip" title="The clean energy produced by your panel is being sold to a local utility and has generated $<%= number_to_human(@user.calculate_overall_money_for, :precision => 2) %> for you.">
+            <td><h1>$<%= number_to_human(@user.calculate_overall_money_for, :precision => 2) %></h1></td>
+          </tr>
+          <tr id="green-hl" rel="tooltip" title="The dirty energy replaced by your panel is equivalent to planting <%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %>.">
+            <td><h1><%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %></h1></td>
+          </tr>
         </table>
       </div>
 
-      <div id="range-buttons" class="span4">
+      <div id="range-buttons" class="span8 hidden-phone">
+        <div class="graph-title"><p class="lead">Clean energy produced by your solar panel (Wh)</p></div>
         <p>
-          <div class="btn-group" data-toggle="buttons-radio">
+          <div class="btn-group  pull-right" data-toggle="buttons-radio">
             <button type="button" class="btn" id="day">Day</button>
             <button type="button" class="btn" id="week" >Week</button>
             <button type="button" class="btn" id="year">Year</button>
           </div>
         </p>
         <p>
-          <div id="year-graph", style="width:600px;height:387px"></div>
+          <div id="year-graph", style="width:700px;height:387px"></div>
         </p>
       </div>
 
@@ -106,10 +120,9 @@
 $(document).ready(
 $(function () {
 
+                  //alert((new Date()).getTime());
+
     var exValue = 1;
-    var green = false;
-    var finance = false;
-    var perf = true;
     var sideGraphStat = $("#sidebar-graph");
     var sideGraphTD = $("#sample")
 
@@ -121,94 +134,90 @@ $(function () {
      var placeholder = $("#year-graph");
      var data = xyData;
      var options = {
-        lines: {show:true},
-        label: chartLabel,
-        xaxis: {tickDecimals:0, tickSize:1},
-      };
+          //lines: {show:true},
+          points: {show:false},
+          bars: {show:true,
+            align: "center",
+            barWidth: 21*(24 * 60 * 60 * 1000)}, //#*day
+          xaxis: {
+          mode: "time",
+          timeformat: "%b",
+          monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+          },
+          grid: {hoverable:true, 
+                clickable:true, 
+                autohighlight:true}
+          //timeformat: "%H %p",
+          //twelveHourClock: true}
+        };
 
-      doThis();
 
-      var tooltipOptions = {text: "HA"};
-
-      sideGraphStat.tooltip();
+      $('#sun-hl').tooltip();
+      $('#dollar-hl').tooltip();
+      $('#green-hl').tooltip();
 
       $('#day').click(function(){
         data = switchProf(0);
+        options = {
+          bars: {show:true,
+            align: "center",
+            barWidth: 0.03*(24 * 60 * 60 * 1000)},
+          xaxis: {
+          mode: "time",
+          //timeformat: "%m"
+          //timeformat: "%H %p",
+          twelveHourClock: true},
+          grid: {hoverable:true, 
+                clickable:true, 
+                autohighlight:true}
+        };
+
         doThis();
       });
 
       $('#week').click(function(){
         data = switchProf(1);
+        options = {
+          bars: {show:true,
+            align: "center",
+            barWidth: 0.8*(24 * 60 * 60 * 1000)},
+          xaxis: {
+          mode: "time",
+          //timeformat: "%m"
+          timeformat: "%b %d",
+          dayNames: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+          //twelveHourClock: true}
+          },
+          grid: {hoverable:true, 
+                clickable:true, 
+                autohighlight:true}
+        };
         doThis();
       });
 
       $('#year').click(function(){
         data = switchProf(2);
+        options = {
+          bars: {show:true,
+            align: "center",
+            barWidth: 21*(24 * 60 * 60 * 1000)},
+          xaxis: {
+          mode: "time",
+          timeformat: "%b",
+          monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+          //timeformat: "%H %p",
+          //twelveHourClock: true}
+          },
+          grid: {hoverable:true, 
+                  clickable:true, 
+                  autohighlight:true}
+        };
         doThis();
       });
 
 
-     $('#green').click(function() {
-      green = true;
-      perf = false;
-      finance = false;
-
-      //sideGraphTD.css("background-image", "url(green_graph.png)")
-      sideGraphStat.html('<tr><td><%= image_tag("green_graph.png") %><span id="hl1"><%= number_with_precision(@weekPowerTotal, :precision=>2) %></span></td></tr>');
-      sideGraphStat.append('<tr><td><%= image_tag("green_graph.png") %></td></tr>');
-      sideGraphStat.append('<tr><td><%= image_tag("green_graph.png") %></td></tr>');
-
-      data  = <%= @em_monthTotals.to_json %>;
-      chartLabel = "Emissions captured (kg C02)";
-      options = {
-        lines: {show:true},
-        xaxis: {tickDecimals:0, tickSize:1},
-        label: chartLabel,
-      };
-      doThis();
-     });
-
-     $('#finance').click(function() {
-      green = false;
-      perf = false;
-      finance = true;
-
-      sideGraphStat.html('<tr><td><%= image_tag("red_graph.png") %></td></tr>');
-      sideGraphStat.append('<tr><td><%= image_tag("red_graph.png") %></td></tr>');
-      sideGraphStat.append('<tr><td><%= image_tag("red_graph.png") %></td></tr>');
-
-      data  = <%= @fi_monthTotals.to_json %>;
-      chartLabel = "Money accrued (dollars)";
-      options = {
-        lines: {show:true},
-        xaxis: {tickDecimals:0, tickSize:1},
-        label: chartLabel,
-      };
-      doThis();
-     });
-
-    $('#perf').click(function() {
-      green = false;
-      perf = true;
-      finance = false;
-
-      sideGraphStat.html('<tr><td><%= image_tag("blue_graph.png") %></td></tr>');
-      sideGraphStat.append('<tr><td><%= image_tag("blue_graph.png") %></td></tr>');
-      sideGraphStat.append('<tr><td><%= image_tag("blue_graph.png") %></td></tr>');
-
-      data  = <%= @monthTotals.to_json %>;
-      chartLabel = "Solar output (Wh)";
-      options = {
-        lines: {show:true},
-        xaxis: {tickDecimals:0, tickSize:1},
-        label: chartLabel,
-      };
-      doThis();
-     });
-
   function switchProf(timeGran) {
     var dataReturn = [];
-    if (perf) {
       switch (timeGran) {
         case 0:    //day
           dataReturn = <%= @dayTotals.to_json %>
@@ -219,52 +228,58 @@ $(function () {
         case 2:    //year
           dataReturn = <%= @monthTotals.to_json %>
           break;
-      } 
-    }
-  }
+      }
 
     return dataReturn;
   }
 
+//redraws canvas
   function doThis() {
-
-     $.plot(placeholder,[data], [options]);
-
-     /*$.plot($("#week-graph"),
-        [
-         {
-           label: chartLabel,
-           data: weekXY,
-           lines: {
-             show: true,
-             barWidth: 0.5,
-             align: "center"
-           }   
-         }
-      ],
-      {
-        xaxis: {
-        }   
-      }
-     )
-
-    $.plot($("#day-graph"),
-        [
-         {
-           label: chartLabel,
-           data: dayXY,
-           lines: {
-             show: true,
-             barWidth: 0.5,
-             align: "center"
-           }   
-         }
-      ],
-      {
-        xaxis: {
-        }   
-      }
-     )*/
+     $.plot(placeholder,[data], options).draw();
   } 
+
+  //event listeners
+
+      function showTooltip(x, y, contents) {
+        $('<div id="tooltip">' + contents + '</div>').css( {
+            position: 'absolute',
+            display: 'none',
+            top: y - 30,
+            left: x + 5,
+            border: '1px solid #fdd',
+            padding: '2px',
+            'background-color': '#fee',
+            opacity: 0.80
+        }).appendTo("body").fadeIn(200);
+    }
+
+    //var previousPoint = null;
+      placeholder.bind("plothover", function (event, pos, item) {
+         // alert('check');
+       // if ($("#enableTooltip:checked").length > 0) {
+            if (item) {
+                if (previousPoint != item.dataIndex) {
+                    previousPoint = item.dataIndex;
+                    
+                    $("#tooltip").remove();
+                    var x = item.datapoint[0].toFixed(2),
+                        y = item.datapoint[1].toFixed(2);
+                    
+                    showTooltip(item.pageX, item.pageY,
+                                y + " Wh");
+                }
+            }
+            else {
+                $("#tooltip").remove();
+                previousPoint = null;            
+            }
+        //}
+    });
+
+    placeholder.bind("plotclick", function(event, pos, item) {
+      //alert('woo');
+    })
+
+  doThis();
 }));
 </script>

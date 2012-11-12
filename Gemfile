@@ -12,6 +12,7 @@ gem 'twitter-bootstrap-rails'
 gem 'therubyracer'
 gem 'annotate'
 gem 'jquery-rails', '~> 2.1'
+gem 'yahoo_weatherman'
 
 # Gems used only for assets and not required
 # in production environments by default.

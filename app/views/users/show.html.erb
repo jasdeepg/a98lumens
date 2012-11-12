@@ -3,7 +3,7 @@
 
     <div class= "span2" id="user-pic">
       <p>
-        <%= image_tag avatar_url(@user) %>
+        <%= image_tag avatar_url(@user), :size =>"85x90"%>
       </p>
     </div>
 
@@ -12,8 +12,8 @@
           <h4><%= @user.name %></h4>
         </p>
         <p>
-          Joined: <%= @user.created_at.month %>-<%= @user.created_at.day %>-<%= @user.created_at.year %>
-          <br>
+         <!-- Joined: <%= @user.created_at.month %>-<%= @user.created_at.day %>-<%= @user.created_at.year %>
+          <br>-->
           Location of solar panel: <%= @location %>
         </p>
     </div>

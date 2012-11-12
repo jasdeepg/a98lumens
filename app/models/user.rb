@@ -26,7 +26,8 @@ class User < ActiveRecord::Base
          :rememberable, :trackable, :validatable
   attr_accessible :name, :email, :password, :location, :password_confirmation, 
                   :remember_me, :created_at, :panel_zip
-  has_many :energy_data, :class_name => "EnergyDatum", :foreign_key => "user_id"
+  has_many :energy_data, :class_name => "EnergyDatum", :foreign_key => "user.rb
+  id"
 
   ###################
   # Performance data

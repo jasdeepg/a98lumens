@@ -41,16 +41,6 @@ class UsersController < ApplicationController
 
       #totals
       @weekPowerTotal = @user.calculate_week_power_for
-
-      #green console
-      @em_monthTotals = @user.em_monthTotals
-      @em_weekTotals = @user.em_weekTotals
-      @em_dayTotals = @user.em_dayTotals
-
-      #finance console
-      @fi_monthTotals = @user.fi_monthTotals
-      @fi_weekTotals = @user.fi_weekTotals
-      @fi_dayTotals = @user.fi_dayTotals
     end
 
     respond_to do |format|

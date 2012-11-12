@@ -56,7 +56,8 @@ namespace :db do
     User.create!(name: "Jasdeep Garcha",
                  email: "jas@98lumens.com",
                  password: "password",
-                 password_confirmation: "password")
+                 password_confirmation: "password",
+                 panel_zip: '93706')
     User.create!(name: "Chirath Neranjena",
                  email: "chirath@98lumens.com",
                  password: "password",

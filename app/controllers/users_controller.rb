@@ -17,6 +17,19 @@ class UsersController < ApplicationController
   # GET /users/1.json
   def show
     @user = User.find(params[:id])
+
+    client = Weatherman::Client.new
+
+    if !@user.panel_zip.nil?
+      response = client.lookup_by_woeid(lookup_woeid(@user.panel_zip))
+
+      @weather = response.description
+      @weather = clean_forecast(@weather).html_safe
+      city = response.location['city']
+      state = response.location['region']
+      @location = [city, state].join(',')
+   end
+
     puts @user.energy_data.nil?
     if @user.energy_data.first.nil?
       puts "pass"
@@ -106,4 +119,17 @@ class UsersController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  private
+    def clean_forecast(forecast)
+      forecast_sep = forecast.split("\n");
+      new_forecast = forecast_sep[0..3].join()
+    end
+
+    def lookup_woeid(zip)
+      woeid_cities = {"93706" => "2407517"}
+
+      woeid_cities[zip].to_i
+    end
+      
 end

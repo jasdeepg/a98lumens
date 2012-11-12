@@ -1,5 +1,23 @@
+#year-graph {
+	clear:both;
+}
+
+hr {
+	margin: 5px 0 20px 0;
+}
+
+#user-name {
+	width:300px;
+}
+.graph-title {
+	text-align:center;
+}
+
+#weather	{
+	float:right;
+}
 #range-buttons	{
-	width:600px;
+	width:700px;
 }
 
 #day {
@@ -23,17 +41,37 @@ span#hl1	{
 
 table#sidebar-graph{
 	width:100%;
-	margin-top:18px;
-	height:300px;	/* as big as graph */
+	margin-top:100px;
+	height:368px;	/* as big as graph */
 }
 
-table#sidebar-graph tr {
+table tr {
 	width:100%;
 	height:33%;
+	border: 1px solid black;
 }
 
-table#sidebar-graph td {
-	opacity:.4;
+table td {
+	text-align:right;
+	vertical-align:bottom;
+	padding-bottom:20px;
+	color: black;	
+}
+
+#sun-hl	{
+	background:url('sun_tran.jpg');
+}
+
+#sun-hl	td {
+	color:black;
+	}
+
+#green-hl	{
+	background:url('green.jpg');			
+}
+
+#dollar-hl	{
+	background:url('dollars.jpg');
 }
 
 ul.hmenu {

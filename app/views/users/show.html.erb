@@ -34,7 +34,7 @@
             <td><h1><%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></h1></td>
           </tr>
           <tr id="dollar-hl" rel="tooltip" title="The clean energy produced by your panel is being sold to a local utility and has generated $<%= number_to_human(@user.calculate_overall_money_for, :precision => 2) %> for you.">
-            <td><h1>$<%= number_to_human(@user.calculate_overall_money_for, :precision => 2) %></h1></td>
+            <td><h1>$<%= number_to_human(@user.calculate_overall_money_for, :precision => 4) %></h1></td>
           </tr>
           <tr id="green-hl" rel="tooltip" title="The dirty energy replaced by your panel is equivalent to planting <%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %>.">
             <td><h1><%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %></h1></td>
@@ -146,7 +146,10 @@ $(function () {
           },
           grid: {hoverable:true, 
                 clickable:true, 
-                autohighlight:true}
+                autohighlight:true},
+          yaxis: {
+            show:false
+          }
           //timeformat: "%H %p",
           //twelveHourClock: true}
         };
@@ -169,7 +172,10 @@ $(function () {
           twelveHourClock: true},
           grid: {hoverable:true, 
                 clickable:true, 
-                autohighlight:true}
+                autohighlight:true},
+          yaxis: {
+            show:false
+          }
         };
 
         doThis();
@@ -190,7 +196,10 @@ $(function () {
           },
           grid: {hoverable:true, 
                 clickable:true, 
-                autohighlight:true}
+                autohighlight:true},
+          yaxis: {
+            show:false
+          }
         };
         doThis();
       });
@@ -210,7 +219,10 @@ $(function () {
           },
           grid: {hoverable:true, 
                   clickable:true, 
-                  autohighlight:true}
+                  autohighlight:true},
+          yaxis: {
+            show:false
+          }
         };
         doThis();
       });
@@ -235,7 +247,9 @@ $(function () {
 
 //redraws canvas
   function doThis() {
+     placeholder.hide();
      $.plot(placeholder,[data], options).draw();
+     placeholder.fadeIn(200);
   } 
 
   //event listeners
@@ -280,6 +294,6 @@ $(function () {
       //alert('woo');
     })
 
-  doThis();
+     $.plot(placeholder,[data], options).draw();
 }));
 </script>

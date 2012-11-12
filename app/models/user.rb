@@ -26,14 +26,13 @@ class User < ActiveRecord::Base
          :rememberable, :trackable, :validatable
   attr_accessible :name, :email, :password, :location, :password_confirmation, 
                   :remember_me, :created_at, :panel_zip
-  has_many :energy_data, :class_name => "EnergyDatum", :foreign_key => "user.rb
-  id"
+  has_many :energy_data, :class_name => "EnergyDatum", :foreign_key => "user_id"
 
   ###################
   # Performance data
   ###################
   def monthSum
-    t = Time.new
+    t = Time.zone.now
 
   	last_entry = self.energy_data.where("month=#{t.month} and day=#{t.day}").last
     puts "LASTMONTH", last_entry
@@ -55,7 +54,7 @@ class User < ActiveRecord::Base
   # return array with week attributes for graph
   def consolidate_week 
   	#grab last 7 days
-    t = Time.new
+    t = Time.zone.now
 
   	refEntry = self.energy_data.where(:month => t.month, :day => t.day).last
   	refDay = refEntry.day
@@ -82,8 +81,12 @@ class User < ActiveRecord::Base
 
   	@dateCount.each do |day, month|
       temp_Obj = self.energy_data.where(:day=>day, :month=>month).last
-  		@weekTotals[arrayCount] = [Time.utc(temp_Obj.year, temp_Obj.month, temp_Obj.day).to_i*1000, self.energy_data.where("day=#{day} AND month=#{month}").sum("power")]
-  		arrayCount = arrayCount + 1
+  		if day == refDay
+        @weekTotals[arrayCount] = [Time.utc(temp_Obj.year, temp_Obj.month, temp_Obj.day).to_i*1000, self.energy_data.where(:day => day, :month => month, :hour=>(1..t.hour)).sum("power")]
+      else
+        @weekTotals[arrayCount] = [Time.utc(temp_Obj.year, temp_Obj.month, temp_Obj.day).to_i*1000, self.energy_data.where("day=#{day} AND month=#{month}").sum("power")]
+  		end
+      arrayCount = arrayCount + 1
   	end
 
     # return both because @weekTotals must be 0-indexed, @dateCount has actual dates
@@ -92,7 +95,7 @@ class User < ActiveRecord::Base
 
   # return array with day attributes for graph
   def consolidate_day
-    t = Time.new
+    t = Time.zone.now
 
     refDay = self.energy_data.where(:day => t.day).select("day").last
     refDay = refDay.day
@@ -115,7 +118,7 @@ class User < ActiveRecord::Base
 
   #calculate overall power generated
   def calculate_overall_power_for
-    t = Time.new
+    t = Time.zone.now
 
   	self.energy_data.where(:year=>t.year, :month=> (1..(t.month))).sum("power") # total in Wh
   end
@@ -135,7 +138,7 @@ class User < ActiveRecord::Base
 
   #calculate today's power
   def calculate_day_power_for
-    t = Time.new
+    t = Time.zone.now
 
     self.energy_data.where(:year=>t.year, :month=> t.month, :day=>t.day).sum("power") # total in Wh
   end

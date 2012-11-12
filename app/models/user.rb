@@ -35,16 +35,16 @@ class User < ActiveRecord::Base
     t = Time.zone.now
 
   	last_entry = self.energy_data.where("month=#{t.month} and day=#{t.day}").last
-    puts "LASTMONTH", last_entry
+    #puts "LASTMONTH", last_entry
     months = (1..last_entry.month).to_a
     days = (1..last_entry.day).to_a
   	@monthTotals = Array.new
 
   	months.each do |curMonth|
       if curMonth == last_entry.month
-        @monthTotals[curMonth-1] = [Time.utc(2012,curMonth).to_i*1000, self.energy_data.where(:month => curMonth, :day => 1..last_entry.day).sum("power")]
+        @monthTotals[curMonth-1] = [Time.utc(2012,curMonth).to_i*1000, self.energy_data.where(:month => curMonth, :day => 1..last_entry.day).sum("power")/1000]
       else
-    		@monthTotals[curMonth-1] = [Time.utc(2012,curMonth).to_i*1000, self.energy_data.where("month=#{curMonth}").sum("power")]
+    		@monthTotals[curMonth-1] = [Time.utc(2012,curMonth).to_i*1000, self.energy_data.where("month=#{curMonth}").sum("power")/1000]
   	  end
     end
 
@@ -58,21 +58,22 @@ class User < ActiveRecord::Base
 
   	refEntry = self.energy_data.where(:month => t.month, :day => t.day).last
   	refDay = refEntry.day
+    tmp_refDay = refDay
   	refMonth = refEntry.month
-  	count = (0..6).to_a
+  	count = (0..30).to_a
   	@dateCount = Array.new
   	@weekTotals = Array.new
   	subCount = 0
 
     #creating date array for weekTotals, assumes each month has 31 days
   	count.each do |var|
-  		if (refDay - subCount) > 0
-  			@dateCount << [refDay - subCount, refMonth]
+  		if (tmp_refDay - subCount) > 0
+  			@dateCount << [tmp_refDay - subCount, refMonth]
   		else
-        refDay = 31
+        tmp_refDay = 31
   			refMonth = refMonth - 1
   			subCount = 0
-  			@dateCount << [refDay - subCount, refMonth]
+  			@dateCount << [tmp_refDay - subCount, refMonth]
   		end
   		subCount = subCount + 1
   	end
@@ -81,10 +82,10 @@ class User < ActiveRecord::Base
 
   	@dateCount.each do |day, month|
       temp_Obj = self.energy_data.where(:day=>day, :month=>month).last
-  		if day == refDay
-        @weekTotals[arrayCount] = [Time.utc(temp_Obj.year, temp_Obj.month, temp_Obj.day).to_i*1000, self.energy_data.where(:day => day, :month => month, :hour=>(1..t.hour)).sum("power")]
+  		if month== t.month && day == t.day
+        @weekTotals[arrayCount] = [Time.utc(temp_Obj.year, temp_Obj.month, temp_Obj.day).to_i*1000, self.energy_data.where(:day => day, :month => month, :hour=>(1..t.hour)).sum("power")/1000]
       else
-        @weekTotals[arrayCount] = [Time.utc(temp_Obj.year, temp_Obj.month, temp_Obj.day).to_i*1000, self.energy_data.where("day=#{day} AND month=#{month}").sum("power")]
+        @weekTotals[arrayCount] = [Time.utc(temp_Obj.year, temp_Obj.month, temp_Obj.day).to_i*1000, self.energy_data.where("day=#{day} AND month=#{month}").sum("power")/1000]
   		end
       arrayCount = arrayCount + 1
   	end
@@ -109,7 +110,7 @@ class User < ActiveRecord::Base
 
     # create array with [hour, power]
     dayofInterest.each do |day|
-      @dayTotals[count] = [Time.utc(day.year,day.month,day.day,day.hour).to_i*1000, day.power]
+      @dayTotals[count] = [Time.utc(day.year,day.month,day.day,day.hour).to_i*1000, day.power/1000]
       count = count + 1
     end
 

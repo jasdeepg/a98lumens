@@ -12,22 +12,23 @@
   <%= javascript_include_tag "flot/jquery.flot.time.js" %>
   <%= javascript_include_tag "flot/jquery.flot.resize.js" %>
   <%= javascript_include_tag "flot/jquery.flot.stack.js" %>
+  <%= javascript_include_tag "jquery.elastislide.js" %>
+  <%= javascript_include_tag "jquery.flexslider-min.js" %>
+  <%= javascript_include_tag "jquery.prettyPhoto.js" %>
   <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
   <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
+  <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-collapse.js"></script>
 </head>
 <body>
   <section id="header">
     <%= render 'layouts/header' %>
   </section>
-  <hr>
   <section id="content">
     <div class="container">
       <p class="notice"><%= notice %></p>
       <p class="alert"><%= alert %></p>
       <%= yield %>
           </div>
-
-          <br>
           
       <%= render 'layouts/footer' %>
   </section>

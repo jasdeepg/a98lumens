@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <h1>Thanks for the message, <%= @name %></h1>
+    <p>
+      We'll get back to you as soon as we can about your question.<br/>
+      In the meantime, check back at <%= @url %> for news. <br />
+    </p>
+    <p>Cheers,</p>
+    <p>The 98Lumens team</p>
+
+    <p>=======================</p>
+    <p>Inquiry summary <br />
+      <br />
+      Name: <%= @name %> <br />
+      Company: <%= @company %> <br />
+      Email: <%= @email %> <br />
+      Phone: <%= @phone %> <br />
+      Message: <%= @message %>
+    </p>
+  </body>
+</html>

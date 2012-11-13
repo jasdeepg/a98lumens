@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html class="not-ie" lang="en">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta name="description" content="98lumens" />
+<meta name="keywords" content="98lumens, solar, cleantech, cleanweb, renewable, energy"/>
+<meta name="author" content="Chirath Neranjena" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<title>98lumenc inc. - Solar Power for Everyone!</title>
+
+<!--Fav and touch icons-->
+<link rel="shortcut icon" href="img/icons/favicon.ico">
+<link rel="apple-touch-icon" href="img/icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="img/icons/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="img/icons/apple-touch-icon-114x114.png">
+
+<!--google web font-->
+<link href='http://fonts.googleapis.com/css?family=Raleway:400,600,700' rel='stylesheet' type='text/css'>
+
+<!--style sheet-->
+<link rel="stylesheet" media="screen" href="css/bootstrap.css"/>
+<link rel="stylesheet" media="screen" href="css/bootstrap-responsive.css"/>
+<link rel="stylesheet" media="screen" href="css/style.css"/>
+
+<!--jquery libraries / others are at the bottom-->
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script src="js/modernizr.js" type="text/javascript"></script>
+
+<!--contact form script starts-->
+<script src="js/jquery.validate.js" type="text/javascript"></script>
+<script src="js/jquery.form.js" type="text/javascript"></script>
+<script type="text/javascript"> 
+$(document).ready(function() {
+        //Contact form
+		$(function() {
+		var v = $("#contactform").validate({
+		submitHandler: function(form) {
+		$(form).ajaxSubmit({
+		target: "#result",
+		clearForm: true
+		});
+		}
+		});
+		});
+		//To clear message field on page refresh (you may clear other fields too, just give the 'id to input field' in html and mention it here, as below)
+		$('#contactform #message').val('');
+});
+</script>
+<!--contact form script ends-->
+
+</head>
+<body>
+
+<!-- content starts
+================================================== -->
+<section id="content" class="clearfix">
+  <div class="container">
+    <div class="row"> 
+      
+      <!--main content starts-->
+      <div class="main-content span8">
+
+        <%= form_tag(:controller => "static_pages", :action=>"info_mail", :method=>"post", :id=>"info-form") do %> 
+          <fieldset>
+            <p>
+              <label>Full Name :</label>
+              <%= text_field_tag :name %>
+            </p>
+            <p>
+              <label>Company Name :</label>
+              <%= text_field_tag :company %>
+            </p>
+            <p>
+              <label>Telephone Number :</label>
+              <%= text_field_tag :phone %>
+            </p>
+            <p>
+              <label>Email Address :</label>
+              <%= email_field_tag :email %>
+            </p>
+            <p>
+              <label>Message :</label>
+              <%= text_area_tag :message %>
+            </p>
+            <p>
+            	<%= submit_tag("Send message") %>
+            </p>
+            <div class="clearfix"></div>
+            <div id="result"></div>
+          </fieldset>
+        <% end %>
+      </div>
+      <!--main content ends--> 
+      
+      
+      <!--sidebar starts-->
+      <div class="sidebar span4 contact">
+        <h4>Product Sales & Support</h4>
+        <h5>Sales inquiry</h5>
+        <a href="#" class="color"><em>sales@98lumens.com</em></a>
+        <div class="spacer-20px"></div>
+        <h5>Technical support</h5>
+        <a href="#" class="color"><em>support@98lumens.com</em></a>
+        <div class="spacer-20px"></div>
+        <h5>Comments</h5>
+        <p> We are always keen to hear from you. Please direct your questions, comments and suggestions to</p>
+        <a href="#" class="color"><em>info@98lumens.com</em></a> </div>
+      <!--sidebar ends-->     
+
+      
+    </div>
+  </div>
+</section>
+<!-- content ends
+================================================== --> 

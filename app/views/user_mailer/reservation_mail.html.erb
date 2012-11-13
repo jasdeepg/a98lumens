@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <h1>Thanks for making your reservation of <%= @panels %>, <%= @name %></h1>
+    <p>
+      We'll get back to you as soon as we can about your reservation.<br/>
+      In the meantime, check back at <%= @url %> for news. <br />
+    </p>
+    <p>Cheers,</p>
+    <p>The 98Lumens team</p>
+
+    <p>=======================</p>
+    <p>Reservation summary <br />
+      ========================
+      <br />
+      Name: <%= @name %> <br />
+      Email: <%= @email %> <br />
+      Phone: <%= @phone %> <br />
+      Panels reserved: <%= @panels %> <br />
+      Message: <%= @message %>
+    </p>
+  </body>
+</html>

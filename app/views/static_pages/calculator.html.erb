@@ -70,7 +70,7 @@
       <div class="sidebar span4 contact">
         <!--divider here-->
         <div class="spacer-40px"></div>
-        <h4><%= number_to_human(@percentOffset, :precision=>2) %>% of your electricty use will be offset</h4>
+        <h4><%= number_to_human(@percentOffset*100, :precision=>2) %>% of your electricty use will be offset</h4>
       </div>
       <!--sidebar ends-->   
     </div>  

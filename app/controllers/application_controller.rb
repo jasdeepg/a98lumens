@@ -11,16 +11,16 @@ class ApplicationController < ActionController::Base
 
   private
     # Overwriting the sign_out redirect path method
-	  def after_sign_out_path_for(resource_or_scope)
-	    new_user_session_path
-	  end
+	#  def after_sign_out_path_for(resource_or_scope)
+	#    new_user_session_path
+	#  end
 
-	  def after_sign_in_path_for(resource_or_scope)
-	  	@user
-	  end
+	def after_sign_in_path_for(resource_or_scope)
+	 	@user
+	end
 
 	  #doesn't work yet ... want to redirect to sign_in page after registering
-	  def after_registration_path_for(resource_or_scope)
-	  	new_user_session_path 
-	  end
+	#  def after_registration_path_for(resource_or_scope)
+	#  	new_user_session_path 
+	#  end
 end

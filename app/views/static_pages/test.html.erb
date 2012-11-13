@@ -1,0 +1,235 @@
+<h2>Figure out how many panels you need to purchase to offset your energy usage</h2>
+<div class="row-fluid">
+	<div class="span5 pull-left">
+		<div class="label-input">Your state (e.g. NC)</div> <input type="text" name="state" class="input-field"><br>
+		<div class="label-input">Monthly electricty bill </div> <input type="text" name="bill" class="input-field"><br>
+		<div class="label-input">Number of panels </div> <input type="text" name="panels" class="input-field">
+		<br>
+		<br>
+		<button type="button" class="btn" id="generate-simulation">Give it a try!</button>
+	</div>
+	<div class="span5 pull-right display-summary">
+		
+	</div>
+</div>
+
+<div class="offset-graph-title"></div>
+<div class="sim-offset-area" style="width:100%;height:300px;display:none"></div>
+
+<div class="balance-graph-title"></div>
+<div class="sim-graph-area" style="width:100%;height:300px;display:none"></div>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var state = "";
+	var monthly_bill = 0;
+	var targetURL = "";
+	var state_retail_price = 0;
+	var sample_solar_output = [66, 93, 120, 147, 173, 200, 200, 
+							173, 147, 93, 66, 66];
+	var sample_yearly_output = 0;
+	var wholesale_energy_price = 0.126;
+
+	//alert(sample_solar_output);
+
+	$.each(sample_solar_output, function(index, value){
+		sample_yearly_output = sample_yearly_output + value;
+		//alert(sample_yearly_output)
+	})
+
+	//alert(sample_yearly_output);
+
+	$('#generate-simulation').click(function(){
+		state = $('input[name=state]').val();
+		monthly_bill = $('input[name=bill]').val();
+		targetURL = "http://localhost:3000/data/state_retail_price?state="+state;
+		var num_panels = $('input[name=panels]').val();
+
+		$.get(targetURL, function(data){
+			//alert(state);
+			//alert(data)
+			series_data = data['series_data'];	//extract series_data
+			data_hash = series_data[0]			//get hash
+			$.each(data_hash['data'], function(index, value){	//iterate through year/price pairs
+				//alert(value);
+				if (value[0]==2011){			//grab 2011
+					state_retail_price = value[1]/100;	//dollars per kWh
+					create_table_sim(state_retail_price, monthly_bill, num_panels);
+					payback_year = create_chart_sim(state_retail_price, monthly_bill, num_panels);
+					build_summary(payback_year, state_retail_price, num_panels);
+				}
+				//alert(key + ' ' + value);
+			})
+		})
+	})
+
+	function build_summary(payback_year, state_retail_price, num_panels){
+		var year_payback = sample_yearly_output*num_panels*wholesale_energy_price;
+
+		$('.display-summary').html("<h3> The solar package you've selected will generate approximately $" + year_payback.toFixed(0) + " a year, and will pay it self off in " + payback_year + " years.<br><br><button type='button' class='btn btn-success'>Reserve now</button>")
+
+	}
+
+	function create_table_sim(state_retail_price, monthly_bill, num_panels){
+		//alert(state_retail_price);
+		//alert(monthly_bill);
+		var calc_monthly_usage = monthly_bill/state_retail_price;
+		var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+		/*var table = $('<table class="table"></table>').addClass('sim-table');
+		var row1 = $('<tr></tr>').addClass('row1');
+		var row2 = $('<tr></tr>').addClass('row2');
+		var row3 = $('<tr></tr>').addClass('row3');
+		for (i=0; i<12; i++){
+			row1.append('<td>'+ sample_solar_output[i]*num_panels +'</td>');
+			row2.append('<td>'+ calc_monthly_usage.toFixed(0) +'</td>');
+			row3.append('<td>'+ (calc_monthly_usage-sample_solar_output[i]*num_panels).toFixed(0) +'</td>');
+		}
+
+		table.append(row1);
+		table.append(row2);
+		table.append(row3);
+		*/
+
+		var usage_dirty = new Array();
+		var usage_clean = new Array();
+
+		for (i=0; i<12; i++){
+			usage_clean[i] = [i, (sample_solar_output[i]*num_panels).toFixed(0)];
+			usage_dirty[i] = [i, (calc_monthly_usage-sample_solar_output[i]*num_panels).toFixed(0)];
+			if (usage_dirty[i][1] < 0) {
+				usage_clean[i][1]=usage_clean[i][1]-(-1*usage_dirty[i][1]);
+				usage_dirty[i][1]=0;
+			}
+		}
+
+		//alert(row1.html());
+
+		
+
+		//alert(table.html());
+
+		var placeholder = $(".sim-offset-area");
+	    var data_clean = usage_clean;
+	    var data_dirty = usage_dirty;
+
+	   // alert(data_clean);
+	   // alert(data_dirty);
+	    
+	    var options_data = {
+	          series: {
+                	stack: true,
+                //lines: { show: true, fill: true, steps: true },
+	                bars: { show: true, 
+	                	align: "center",
+	                	barWidth: 0.7 }
+                },
+                legend: { 
+                	position: "se"
+                },
+                xaxis: {
+                	show: true,
+                	tickLength: 0
+                }
+	        };
+
+	    $('.offset-graph-title').html('<h1> Current energy usage subsidized by solar </h1>')
+
+	   	placeholder.css("display","block")
+
+		$.plot(placeholder,[
+			    	{data: data_dirty},
+			    	{label: "Energy subsidized by solar", data: data_clean}],
+			    	options_data);
+
+		//$('.sim-table-area').html(table);
+	}
+
+	function create_chart_sim(state_retail_price, monthly_bill, num_panels){
+		var initial_balance = num_panels*800; // 250 W panel = $800 @ $3.20/watt
+		var payback = sample_yearly_output*wholesale_energy_price*num_panels;
+		var payback_year = 0;
+		var paid_back = false;
+
+		//estimate balance, savings over 10 years
+		savings = new Array();
+		balance = new Array();
+
+		savings[0] = [0, payback];
+		balance[0] = [0,-1*initial_balance];
+
+		for (i=1;i<12;i++){
+			savings[i] = [i, payback];
+			balance[i] = [i, balance[i-1][1]+savings[i][1]];
+			if (balance[i][1] > 0 && !paid_back){
+				paid_back = true;
+				payback_year = i;	
+			}
+			if (balance[i][1] > 1000){
+				break;
+			}
+		}
+
+		var placeholder = $(".sim-graph-area");
+	    var data_savings = savings;
+	    var data_balance = balance;
+
+	    var options_data = {
+	          bars: {show:true,
+	          	align: "center",
+	            barWidth: 0.7 },
+	          points: {show:false},
+	          xaxis: {
+	            tickLength:0,
+	          },
+	          grid: {hoverable:true, 
+	                clickable:true, 
+	             	},
+	          yaxis: {
+	            show:true,
+	          },
+	          legend: {
+	          	position: "nw"
+	          }
+	        };
+
+	     //alert(data_balance)
+
+	    $('.balance-graph-title').html('<h1> Payback period </h1>')
+
+	    placeholder.css("display","block")
+
+	    $.plot(placeholder,[
+	    	{label: "Net investment", data: data_balance},
+	    	{label: "Solar rate of return", data: data_savings}],
+	    	options_data);
+
+	    return payback_year;
+	}
+
+	/*$.ajax({
+	  type: "GET",
+	  url: targetURL,
+	  dataType: 'json',
+	  success: function(data) {
+		  var items = [];
+
+		  $.each(data, function(key, val) {
+		    items.push('<li id="' + key + '">' + val + '</li>');
+		  });
+
+		  $('<ul/>', {
+		    'class': 'my-new-list',
+		    html: items.join('')
+		  }).appendTo('body');
+		}
+	});*/
+});
+</script>
+
+<!-- exampe of a request for EIA -->
+<!-- {"request":
+	{"command":"series/data","series_id":"ELEC.PRICE.NC-RES.A"},
+"series_data":
+	[{"series_id":"ELEC.PRICE.NC-RES.A","data":[["2011","10.26"],["2010","10.12"],["2009","9.99"],["2008","9.52"],["2007","9.4"],["2006","9.12"],["2005","8.65"],["2004","8.45"],["2003","8.32"],["2002","8.19"],["2001","8.12"]]}]} -->

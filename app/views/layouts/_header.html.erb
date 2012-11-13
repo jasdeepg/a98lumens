@@ -39,6 +39,11 @@
             <li><a href="benefits.html">Benefits</a></li>
  			<li><a href="about.html">About</a> </li>
             <li><a href="contact.html">Contact</a></li>
+            <% if signed_in? %>
+            	<li><%= link_to("Logout", destroy_user_session_path, :method => :delete) %></li>
+            <% else %>
+            	<li><%= link_to("Sign in", new_user_session_path) %></li>
+            <% end %>
           </ul>
         </div>
         <!--menu ends--> 

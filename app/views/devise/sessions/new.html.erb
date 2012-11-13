@@ -1,23 +1,28 @@
-<h2>Sign in</h2>
+<fieldset>
+  	<legend>Sign in</legend>
 
-<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email, :value => "jas@98lumens.com" %></div>
+	<div class="hero-unit">
+	<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+	  <div><label><%= f.label :email %></label><br />
+	  <%= f.email_field :email %></div>
 
-  <div><%= f.label :password %><br />
-  <%= f.password_field :password, :value => "password" %></div>
+	  <div><label><%= f.label :password %></label><br />
+	  <%= f.password_field :password %></div>
 
-  <% if devise_mapping.rememberable? -%>
-    <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
-  <% end -%>
+	  <% if devise_mapping.rememberable? -%>
+	    <div><%= f.check_box :remember_me %> <%= f.label :remember_me %></div>
+	  <% end -%>
+	  <br>
 
-  <div><%= f.submit "Sign in" %></div>
-<% end %>
+	  <div><%= f.submit "Sign in", :class =>"btn btn-primary"%> or <%= link_to("register", new_user_path) %></div>
+	<% end %>
+	
 
-<%= render "links" %>
+	</div>
+</fieldset>
+
 
 <script type="text/javascript">
 
-	$(".new_user").submit();
 
 </script>

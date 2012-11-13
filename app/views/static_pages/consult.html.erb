@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html class="not-ie" lang="en">
+<!--<![endif]-->
+<head>
+
+<!--contact form script starts-->
+<script src="js/jquery.validate.js" type="text/javascript"></script>
+<script src="js/jquery.form.js" type="text/javascript"></script>
+<script type="text/javascript"> 
+$(document).ready(function() {
+        //Contact form
+		$(function() {
+		var v = $("#contactform").validate({
+		// submitHandler: function(form) {
+		//$(form).ajaxSubmit({
+		//target: "#result",
+		//clearForm: true
+		//});
+		//}
+		});
+		});
+		//To clear message field on page refresh (you may clear other fields too, just give the 'id to input field' in html and mention it here, as below)
+		$('#contactform #message').val('');
+});
+</script>
+<!--contact form script ends-->
+
+
+
+</head>
+<body>
+
+<!-- content starts
+================================================== -->
+<section id="content" class="clearfix">
+  <div class="container">
+  
+  <!--divider here-->
+    <div class="spacer-40px"></div>
+  
+    <div class="row"> 
+      
+      <!--main content starts-->
+      <div class="main-content span8">
+      
+              
+      
+      <h1>Get your <span class="color">Free</span> solar proposal</h1>
+      <h4>Tell us a little bit about your electricity use</h4>
+
+
+        <form  id="monthly_bill" method="GET" action="calculator.html">
+          <fieldset>
+            <p>
+              <label>Averge monthly power bill : </label>
+              <select name="UserPanels">
+                <option selected value="2">less than $30 per month</option>
+                <option value="3">$30 to $50 per month</option>
+                <option value="6">$50 to $100 per month</option>
+                <option value="10">$100 to $150 per month</option>
+                <option value="14">$150 to $200 per month</option>
+                <option value="18">$200 to $250 per month</option>
+                <option value="22">$250 to $300 per month</option>
+                <option value="26">$300 to $350 per month</option>
+                <option value="30">more than $350 per month</option>
+              </select>
+            </p>
+
+            <p>
+              <input type="hidden" name="SetPanels" value="2">
+              <input type="submit" value="Go" class="submit"/>
+            </p>
+            <div class="clearfix"></div>
+            <div id="result"></div>
+          </fieldset>
+        </form>
+        
+        
+        
+      </div>
+      <!--main content ends--> 
+      
+      
+      <!--sidebar starts-->
+      <div class="sidebar span4 contact">
+        <h4>Product Sales & Support</h4>
+        <h5>Sales inquiry</h5>
+        <a href="#" class="color"><em>sales@98lumens.com</em></a>
+        <div class="spacer-20px"></div>
+        <h5>Technical support</h5>
+        <a href="#" class="color"><em>support@98lumens.com</em></a>
+        <div class="spacer-20px"></div>
+        <h5>Comments</h5>
+        <p> We are always keen to hear from you. Please direct your questions, comments and suggestions to</p>
+        <a href="#" class="color"><em>info@98lumens.com</em></a> </div>
+      <!--sidebar ends-->     
+
+      
+    </div>
+    
+    
+    <div class="row"> 
+    
+    <!--divider here-->
+    <div class="spacer-40px"></div>
+    <!--box starts-->
+    <div class="row">
+      <div class="span12">
+        <div class="dark-box">
+          <h1>You are just <span class="color">3</span> steps away</h1>
+          <ul class="list-inline">
+            <li>1. Select number of panels</li>
+            <li>2. See awesomeness</li>
+            <li>3. Make <span class="color">FREE</span> reservation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!--box ends--> 
+   </div> 
+    
+  </div>
+</section>
+<!-- content ends

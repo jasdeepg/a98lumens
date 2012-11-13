@@ -1,0 +1,115 @@
+<!-- content starts
+================================================== -->
+<section id="content" class="clearfix">
+  <div class="container"> 
+    
+    <h1>A new way to go <span class="color">Solar</span></h1>
+   
+    <!--row starts-->
+    <div class="row"> 
+      
+      <!--column one starts-->
+      <div class="span6">
+        <h4 class="heading-icon clearfix"><span class="color">98lumens</span> -  how it works</span></h4>
+							<p>98lumens is introducing a new way for anyone to go solar AND get great returns on the investment. It's simple, elegant, and convenient. See for yourself...</p>
+                            <p>With 98lumens, folks who want to take part in solar will not have to install solar panels on their roofs. Instead, they can purchase panels that will be installed for them by 98lumens at sunny desert locations in the United States. The energy produced from these panels will then be sold to a local utility and the proceeds will be returned to 98lumens customers. </p>
+                            
+<p>98lumens installations are optimized using the best technology. And in our desert locations, the solar panels will receive 70% more sunlight than the average rooftop. And yes, we also keep them clean.</p>
+
+        <a href="faqs.html">Learn more &raquo;</a> </div>
+      <!--column one ends--> 
+      
+      <!--column two / flexslider starts-->
+      <div class="span6">
+        <div class="flexslider image-slider clearfix">
+          <ul class="slides">
+            <li><%= image_tag("preview/bm1.png") %></li>
+            <li><%= image_tag("preview/bm3.png") %></li>
+            <li><%= image_tag("preview/bm2.png") %></li>
+           </ul>
+        </div>
+      </div>
+      <!--column two / flexslider ends--> 
+      
+    </div>
+    <!--row ends--> 
+    
+    <!--divider here-->
+    <div class="spacer-40px"></div>
+    
+    <!--box starts-->
+    <div class="row">
+      <div class="span12">
+        <div class="dark-box">
+          <h1><span class="color">Get started</span> today!</h1>
+          <ul class="list-separator">
+            <li> Go Solar <span class="separator">|</span></li>
+            <li> Make money <span class="separator">|</span> </li>
+            <li> With no hassle</li>
+          </ul>
+          <a href="consult.html" class="mybtn">Click here</a> </div>
+      </div>
+    </div>
+    <!--box ends--> 
+    
+  </div>
+</section>
+
+<!-- content ends
+
+<!--elastislide carousel script starts-->
+<script type="text/javascript">
+$(document).ready(function() {
+$('#carousel').elastislide({
+    imageW    : 300,
+    margin    : 20,
+    border    : 0,
+    easing    : 'easeInBack'
+});
+});
+</script>
+<!--elastislide carousel script ends-->
+
+<!--prettyphoto scripts starts-->
+<script type="text/javascript">
+$(document).ready(function() {  
+    $('a[data-rel]').each(function() {
+    $(this).attr('rel', $(this).data('rel'));
+    });
+    $("a[rel^='prettyPhoto[gallery1]']").prettyPhoto({
+    animation_speed: 'fast',
+    slideshow: 5000,
+    autoplay_slideshow: false,
+    opacity: 0.80,
+    show_title: false,
+    theme: 'pp_default', /* light_rounded / dark_rounded / light_square / dark_square / facebook */
+    overlay_gallery: false,
+    social_tools: false,
+    changepicturecallback: function(){
+    var $pp = $('.pp_default');
+    if( parseInt( $pp.css('left') ) < 0 ){
+    $pp.css('left', 0 );
+    }
+    }
+    }); 
+});
+</script>
+<!--prettyphoto scripts ends-->
+
+<!--flexslider scripts starts-->
+<script type="text/javascript"> 
+$(window).load(function() {
+//Image Slider
+$('.image-slider').flexslider({
+      animation: "fade",
+    slideshowSpeed: 5000,
+    animationDuration: 500,
+      controlNav: true,
+      keyboardNav: true,
+      directionNav: true,
+    pauseOnHover: true,
+    pauseOnAction: true  
+});
+});
+</script>
+<!--flexslider scripts ends-->

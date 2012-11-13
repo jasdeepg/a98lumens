@@ -5,8 +5,18 @@ A98lumens::Application.routes.draw do
 
   root :to => "static_pages#home"
 
-  match 'static_pages/about', :to=> "static_pages#about", :as => "about"
+  match 'about', :to=> "static_pages#about", :as => "about"
+  match 'contact', :to=> "static_pages#contact", :as => "contact"
   match 'test', :to=> "static_pages#test", :as => "test"
+  match 'learn', :to=> "static_pages#learn", :as => "learn"
+  match 'faqs', :to=> "static_pages#faqs", :as => "faqs"
+  match 'consult', :to=> "static_pages#consult", :as => "consult"
+  match 'pricing', :to=> "static_pages#pricing", :as => "pricing"
+  match 'reserve', :to=> "static_pages#reserve", :as => "reserve"
+  match 'benefits', :to=> "static_pages#benefits", :as => "benefits"
+  match 'submit_reserve', :to=> "static_pages#submit_reserve", :as => "submit_reserve"
+  match 'info_mail', :to=> "static_pages#info_mail", :as => "info_mail"
+  match 'calculator', :to=> "static_pages#calculator", :as => "calculator"
   match 'data/state_retail_price', :to => "static_pages#state_retail_price", :as => "state_retail_price"
 
   resources :energy_data

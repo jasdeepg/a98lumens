@@ -1,0 +1,131 @@
+
+<body>
+
+<!-- content starts
+================================================== -->
+<section id="content" class="clearfix">
+  <div class="container"> 
+  
+    <!--divider here-->
+    <div class="spacer-20px"></div>
+    
+    <h1>Your personal <span class="color">98lumens</span> Solar proposal</h1>
+    <h1><span class="color">Environment</span></h1>
+  
+    <!--features starts-->
+    <div class="row">
+      <div class="span12">
+
+        <!--divider here-->
+        <div class="spacer-20px"></div>
+        
+        <!--feature list starts-->
+        <ul class="list-3col text-center">
+
+          <li>
+            <h2><%= @electricityUse %> kWh</h2>
+            Your estimated average monthly eletrcity usage based on your electricity bill and national averages.</li>
+
+          <li>
+            <h2><%= @userPanels %> Solar Panels</h2>
+            Total number of 98lumens solar panels needed to offset 100% of your electricity use.</li>
+          <li>
+
+            <h2><%= number_to_human(@cO2OffsetPerYear, :precision=>2) %> Metric Tons</h2>
+            Amount of CO2 released into the atmosphere per year by your utility when producing your electricity</li>
+        </ul>
+        <!--feature list ends--> 
+      
+      </div>
+    </div>
+    <!--features ends-->
+    
+    <div class="row">
+    <!--divider here-->
+    <div class="spacer-20px"></div> 
+     
+     <div class="main-content span8">
+     
+         <h4>Tell us how many <span class="color">98lumens</span> solar panels you would like</h4>
+
+        <form  id="contactform" method="GET" action="calculator.php">
+          <fieldset>
+            <p>
+              <label>Number of panels :</label>
+              <input name="SetPanels" value="<%= @setPanels %>" class="number"  type="text">
+            </p>
+            <p>
+                <input type="hidden" name="UserPanels" value="<%= @userPanels %>"/>
+                <input type="submit" value="Update" class="submit"/>
+            </p>
+            <div class="clearfix"></div>
+            <div id="result"></div>
+          </fieldset>
+        </form>
+      </div>
+      <!--main content ends--> 
+      
+      
+      <!--sidebar starts-->
+      <div class="sidebar span4 contact">
+        <!--divider here-->
+        <div class="spacer-40px"></div>
+        <h4><%= number_to_human(@percentOffset, :precision=>2) %>% of your electricty use will be offset</h4>
+      </div>
+      <!--sidebar ends-->   
+    </div>  
+      
+    <!--divider here-->
+    <div class="spacer-20px"></div>   
+    
+    <h4>Your contribution to the <span class="color">Environment</span> with these solar panels</h4>
+     <!--about image with caption starts-->
+    <div class="row">
+      <div class="span12 relativeto"> <%= image_tag("preview/img-about98-1.jpg") %>
+        <div class="about-overlay">
+          <div class="overlay-inner">
+            <ul class="list-unstyled">
+              <li>
+                 <h3><%= number_to_human(@cO2OffsetPerYear, :precision=>2) %> Metric Tons</h3>
+                 Total CO2 emissions saved per year</li>
+
+                 <li><h3><%= number_to_human(@cO2Offset, :precision=>2) %> Metric Tons </h3>
+                 Panel lifetime CO2 emissions saved</li>
+               
+                 <li><h3><%= number_to_human(@plantedTrees, :precision=>0) %> Trees </h3>
+                 Equivalent number of trees you would otherwise have to plant</li>
+      
+                 <li><h3><%= number_to_human(@vehicleOffset, :precision=>0) %> SUVs</h3>
+                 Vehicles you would otherwise have to take off the road for a year</li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--about image ends-->  
+         
+    <!--spacer here-->
+    <div class="spacer-30px"></div>
+    
+    <!--box starts-->
+    <div class="row">
+      <div class="span12">
+        <div class="dark-box">
+          <h1>Click next to find out <span class="color">More</span></h1>
+               <ul class="list-inline">
+                 <li>See how <span class="color">98lumens</span> makes economic sense</li>
+               </ul>
+            
+            <a href="consult.html" class="mybtn"> Back</a> &nbsp &nbsp &nbsp <a href="pricing.html?SetPanels=<%= @setPanels %>&UserPanels=<%= @userPanels %>" class="mybtn"><span class="color">Next ></span></a> </div>
+
+
+      </div>
+    </div>
+    <!--box ends--> 
+    
+  </div>
+</section>
+<!-- content ends
+================================================== --> 
+</body>

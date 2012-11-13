@@ -37,4 +37,14 @@ A98lumens::Application.configure do
 
   # Setting default URL
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+
+  config.action_mailer.smtp_settings = {
+    :address => "smtp.gmail.com" ,
+    :port => 587 ,
+    :domain => "smtp.gmail.com" ,
+    :user_name => "jas@98lumens.com" ,
+    :password => "tazspike1",
+    :authentication       => 'plain',
+    :enable_starttls_auto => true  
+  }
 end

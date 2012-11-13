@@ -13,7 +13,7 @@
     <div class="row"> 
       
       <!--logo starts-->
-      <div class="span4 logo"><a href="index.html"><%= image_tag("98lumens logo.png", :size=>"148x80") %></a></div>
+      <div class="span4 logo"><a href=<%= root_path %>><%= image_tag("98lumens logo.png", :size=>"148x80") %></a></div>
       <!--logo ends-->
       
       <div class="span8 clearfix"> 
@@ -29,16 +29,16 @@
         <!--menu starts-->
         <div id="smoothmenu" class="ddsmoothmenu">
           <ul>
-            <li><a href="#" class="selected">Home</a></li>
-            <li><a href="learn.html">Learn</a>
+            <li><%=link_to "Home", root_path %></li>
+            <li><%=link_to "Learn", learn_path %></a>
               <ul>
-                <li><a href="learn.html">98lumens Solar Process</a></li>
-                <li><a href="faqs.html">FAQs</a></li>
+                <li><a href="">98lumens Solar Process</a></li>
+                <li><%=link_to "FAQs", faqs_path %></li>
               </ul>
             </li>
-            <li><a href="benefits.html">Benefits</a></li>
- 			<li><a href="about.html">About</a> </li>
-            <li><a href="contact.html">Contact</a></li>
+            <li><%=link_to "Benefits", benefits_path %></li>
+ 			<li><%=link_to "About", about_path %> </li>
+            <li><%= link_to "Contact", contact_path %></li>
             <% if signed_in? %>
             	<li><%= link_to("Logout", destroy_user_session_path, :method => :delete) %></li>
             <% else %>

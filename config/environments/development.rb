@@ -22,6 +22,8 @@ A98lumens::Application.configure do
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
 
+  config.action_mailer.delivery_method = :smtp
+
   # Raise exception on mass assignment protection for Active Record models
   config.active_record.mass_assignment_sanitizer = :strict
 
@@ -44,7 +46,7 @@ A98lumens::Application.configure do
     :domain => "smtp.gmail.com" ,
     :user_name => "jas@98lumens.com" ,
     :password => "tazspike1",
-    :authentication       => 'plain',
+    :authentication       => 'login',
     :enable_starttls_auto => true  
   }
 end

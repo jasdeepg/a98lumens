@@ -164,12 +164,12 @@ class StaticPagesController < ApplicationController
       treeCoeff = 80
       vehicleCoeff = 5.1
 
-      electricityUse = userPanels*electricCoeff
+      electricityUse = (userPanels.to_i)*(electricCoeff.to_f)
       lifetimeUse = electricityUse * panelLifeTime * 12
       cO2emissions = lifetimeUse*((cO2Coeff.to_f)/1000)
       cO2emissionsPerYear = (cO2emissions.to_f)/panelLifeTime
       
-      percentOffset = (setPanels.to_i)/((userPanels.to_i)*100)
+      percentOffset = ((productionCoeff.to_f)*(setPanels.to_i))/(electricityUse*12)
 
       lifetimeProduction = (productionCoeff.to_f)*(setPanels.to_i)*(panelLifeTime.to_i)
       cO2Offset = lifetimeProduction * cO2Coeff.to_f/1000

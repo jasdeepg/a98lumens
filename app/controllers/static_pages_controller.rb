@@ -1,7 +1,6 @@
 class StaticPagesController < ApplicationController
     layout "override"
 
-
   def home
   end
 
@@ -25,6 +24,9 @@ class StaticPagesController < ApplicationController
 
   def contact
     @snippet = fetch_url('http://98lumens.com/contact.html').html_safe
+  end
+
+  def projects
   end
 
   def info_mail

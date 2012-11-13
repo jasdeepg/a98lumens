@@ -20,7 +20,8 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
 
-    if current_user
+    redirect_to user_path(current_user) unless current_user?(@user)
+
       client = Weatherman::Client.new
 
       if !@user.panel_zip.nil?
@@ -51,9 +52,6 @@ class UsersController < ApplicationController
         format.js
         format.json { render json: @user }
       end
-    else
-      redirect_to root
-    end
   end
 
   # GET /users/new
@@ -126,6 +124,13 @@ class UsersController < ApplicationController
       woeid_cities = {"93706" => "2407517"}
 
       woeid_cities[zip].to_i
+    end
+    def current_user?(user)
+      if current_user=user
+        true
+      else
+        false
+      end
     end
       
 end

@@ -7,6 +7,7 @@ A98lumens::Application.routes.draw do
 
   match 'about', :to=> "static_pages#about", :as => "about"
   match 'contact', :to=> "static_pages#contact", :as => "contact"
+  match 'projects', :to=> "static_pages#projects", :as => "projects"
   match 'test', :to=> "static_pages#test", :as => "test"
   match 'learn', :to=> "static_pages#learn", :as => "learn"
   match 'faqs', :to=> "static_pages#faqs", :as => "faqs"

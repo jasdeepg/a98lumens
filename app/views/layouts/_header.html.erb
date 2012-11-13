@@ -40,14 +40,32 @@
  			<li><%=link_to "About", about_path %> </li>
             <li><%= link_to "Contact", contact_path %></li>
             <% if signed_in? %>
-            	<li><%= link_to("Logout", destroy_user_session_path, :method => :delete) %></li>
+                <div class="dropdown pull-right btn">
+                  <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
+                    <b>Account</b>
+                    <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                    <%= link_to("Dashboard", user_path(current_user)) %>
+                    <%= link_to("Logout", destroy_user_session_path, :method => :delete) %>
+                  </ul>
+              </div>
+            	
             <% else %>
             	<li><%= link_to("Sign in", new_user_session_path) %></li>
             <% end %>
+          
+
           </ul>
+
         </div>
         <!--menu ends--> 
         
       </div>
     </div>
   </div>
+
+
+<script type="text/javascript">
+  $('.dropdown-toggle').dropdown()
+</script>

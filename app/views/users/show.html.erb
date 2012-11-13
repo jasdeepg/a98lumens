@@ -13,10 +13,10 @@
         <p class="lead" id="name-text">
           <h4><%= @user.name %></h4>
         </p>
-        <p>
+        <p style="font-size:16px">
          <!-- Joined: <%= @user.created_at.month %>-<%= @user.created_at.day %>-<%= @user.created_at.year %>
           <br>-->
-          Location of solar panel: <%= @location %>
+          Location of solar panel: <b><%= @location %></b>
         </p>
     </div>
 
@@ -46,14 +46,14 @@
       <div class="highlight-box" id="sun-hl" title="kWh is the unit of measurement for electricity. Your panel is responsible for <%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %> of renewable energy over the duration of its operation.">
         <div class='highlight-banner'>
           <div class="highlight"><%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></div>
-          <div class="sub-highlight">Total energy produced</div>
+          <div class="sub-highlight">Lifetime output</div>
         </div>
       </div>
       <div class="vertical-space"></div>
       <div class="highlight-box" id="dollar-hl" title="The clean energy produced by your panel is being sold to a local utility and has generated $<%= number_to_human(@user.calculate_overall_money_for, :precision => 2) %> for you.">
         <div class='highlight-banner'>
           <div class="highlight">$<%= number_to_human(@user.calculate_overall_money_for, :precision => 4) %></div>
-          <div class="sub-highlight">Equivalent money generated</div>
+          <div class="sub-highlight">Lifetime earning</div>
         </div>
       </div>
       <div class="vertical-space"></div>
@@ -196,7 +196,7 @@ $(function () {
             //timeformat: "%m"
             //timeformat: "%H %p",
             twelveHourClock: true,
-            tickLength:0
+            tickLength:0,
           },
           grid: {hoverable:true, 
                 clickable:true, 

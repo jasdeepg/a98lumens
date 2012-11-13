@@ -1,4 +1,7 @@
 class StaticPagesController < ApplicationController
+    layout "override"
+
+
   def home
   end
 

@@ -6,6 +6,8 @@ A98lumens::Application.routes.draw do
   root :to => "static_pages#home"
 
   match 'static_pages/about', :to=> "static_pages#about", :as => "about"
+  match 'test', :to=> "static_pages#test", :as => "test"
+  match 'data/state_retail_price', :to => "static_pages#state_retail_price", :as => "state_retail_price"
 
   resources :energy_data
 

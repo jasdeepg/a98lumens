@@ -1,3 +1,19 @@
+.sign-in-out-link	{
+	font-color:blue;
+}
+
+.label-input	{
+	width:50%;
+	font-size: 20px;
+	padding-bottom: 10px;
+	padding-top: 10px;
+	font-family: 'Helvetica';
+}
+
+.input-field	{
+	width:30%;
+}
+
 .btn-group	{
 	padding-right:19px;
 }
@@ -878,7 +894,7 @@ label, input, button, select, textarea, input[type="text"] {
 	font-size: 14px;
 	color: #767676;
 	font-weight: 400;
-	line-height: 2.7em;
+	line-height: 1.7em;
 	text-shadow: 0px 1px 0px #fff;
 }
 label {
@@ -888,8 +904,8 @@ label {
 	height: auto;
 }
 input[type="text"], select, textarea {
-	width: 66% !important;
-	height: 30px;
+	width: 26% !important;
+	height: 20px;
 	padding: 5px;
 	margin: 0;
 	display: inline-block;

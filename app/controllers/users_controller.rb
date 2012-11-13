@@ -20,35 +20,39 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
 
-    client = Weatherman::Client.new
+    if current_user
+      client = Weatherman::Client.new
 
-    if !@user.panel_zip.nil?
-      response = client.lookup_by_woeid(lookup_woeid(@user.panel_zip))
+      if !@user.panel_zip.nil?
+        response = client.lookup_by_woeid(lookup_woeid(@user.panel_zip))
 
-      @weather = response.description
-      @weather = clean_forecast(@weather).html_safe
-      city = response.location['city']
-      state = response.location['region']
-      @location = [city, state].join(',')
-   end
+        @weather = response.description
+        @weather = clean_forecast(@weather).html_safe
+        city = response.location['city']
+        state = response.location['region']
+        @location = [city, state].join(',')
+     end
 
-    puts @user.energy_data.nil?
-    if @user.energy_data.first.nil?
-      puts "pass"
+      puts @user.energy_data.nil?
+      if @user.energy_data.first.nil?
+        puts "pass"
+      else
+        @energy_data = @user.energy_data.order("created_at DESC").limit(10)
+        @dayTotals = @user.consolidate_day
+        @days, @weekTotals = @user.consolidate_week
+        @monthTotals = @user.monthSum
+
+        #totals
+        @weekPowerTotal = @user.calculate_week_power_for
+      end
+
+      respond_to do |format|
+        format.html # show.html.erb
+        format.js
+        format.json { render json: @user }
+      end
     else
-      @energy_data = @user.energy_data.order("created_at DESC").limit(10)
-      @dayTotals = @user.consolidate_day
-      @days, @weekTotals = @user.consolidate_week
-      @monthTotals = @user.monthSum
-
-      #totals
-      @weekPowerTotal = @user.calculate_week_power_for
-    end
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.js
-      format.json { render json: @user }
+      redirect_to root
     end
   end
 

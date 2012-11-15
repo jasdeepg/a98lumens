@@ -142,10 +142,10 @@ class StaticPagesController < ApplicationController
   end
 
   def state_retail_price
-  	api_key = "8e696eD2ee7577B35204C9Fe451B367C"
+  	api_key = "8E696ED2EE7577B35204C9FE451B367C"
   	state_id = params[:state]
 
-  	targetURL = 'http://api.eia.gov/series/data/?api_key='+api_key+"&series_id=eLeC.PRICe."+state_id+"-ReS.A"
+  	targetURL = 'http://api.eia.gov/series/data/?api_key='+api_key+"&series_id=ELEC.PRICE."+state_id+"-ALL.A"
 
   	handle_to_target = open(targetURL)
 

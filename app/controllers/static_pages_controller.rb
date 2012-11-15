@@ -23,7 +23,7 @@ class StaticPagesController < ApplicationController
   end
 
   def contact
-    @snippet = fetch_url('http://98lumens.com/contact.html').html_safe
+    #@snippet = fetch_url('http://98lumens.com/contact.html').html_safe
   end
 
   def projects

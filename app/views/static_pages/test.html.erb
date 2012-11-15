@@ -43,7 +43,7 @@ $(document).ready(function(){
 	$('#generate-simulation').click(function(){
 		state = $('input[name=state]').val();
 		monthly_bill = $('input[name=bill]').val();
-		targetURL = "/state_retail_price?state="+state;
+		targetURL = "static_pages/state_retail_price?state="+state;
 		var num_panels = $('input[name=panels]').val();
 
 		$.get(targetURL, function(data){

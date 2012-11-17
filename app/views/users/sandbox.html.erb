@@ -3,6 +3,15 @@
 <div class = "dashboard">
 <div class = "row-fluid">
 
+  <!---
+  Make everything but the header a partial and render that based on how many panels you have
+  user.panels.each do |f|
+    <% render partial "dashboard", :collection=> @user.panels%>
+  end 
+-->
+
+<!-- dash-header -->
+
     <div class= "span2" id="user-pic">
       <p>
         <%= image_tag avatar_url(@user), :size =>"85x90"%>
@@ -15,8 +24,6 @@
         </p>
         <% if !@user.energy_data.empty? %>
         <p style="font-size:16px">
-         <!-- Joined: <%= @user.created_at.month %>-<%= @user.created_at.day %>-<%= @user.created_at.year %>
-          <br>-->
           Location of solar panel: <b><%= @location %></b>
         </p>
         <% end %>
@@ -36,6 +43,8 @@
     <% end %>
 
 </div>
+<!--
+  -->
 
 <% if !@user.energy_data.empty? %>
 
@@ -80,70 +89,8 @@
           <div class="sub-highlight">Equivalent trees planted</div>
         </div>
       </div>
-
-     <!--   <table id="sidebar-graph">
-          <td id="sun-hl" rel="tooltip" title="kWh is the unit of measurement for electricity. Your panel is responsible for <%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %> of renewable energy over the duration of its operation.">
-            <h1><%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></h1></td>
-          <td id="dollar-hl" rel="tooltip" title="The clean energy produced by your panel is being sold to a local utility and has generated $<%= number_to_human(@user.calculate_overall_money_for, :precision => 2) %> for you.">
-            <h1>$<%= number_to_human(@user.calculate_overall_money_for, :precision => 4) %></h1></td>
-          <td id="green-hl" rel="tooltip" title="The dirty energy replaced by your panel is equivalent to planting <%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %>.">
-            <h1><%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %></h1></td>
-          </tr>
-        </table> -->
   </div>
 
-<!-- Table for all metrics
-
-      <div class="btn-group btn-group-vertical">
-        <button class= "btn btn-block" id="perf">Performance</button>
-        <button class= "btn btn-block" id="finance">Finance</button>
-        <button class= "btn btn-block" id="green">Environment</button>
-      </div>
-
-<div class="row-fluid">
-  <div class="span6 offset2">
-    <p>
-      <h2>Cumulative metrics</h2>
-      <table class="table table-striped">
-        <tr>
-          <th>Clean energy produced</th>
-          <td><%= number_with_precision(@user.calculate_overall_power_for, :precision =>2) %> Wh</td>
-        </tr>
-        <tr>
-          <th>Money accrued</th>
-          <td><%= number_with_precision(@user.calculate_overall_money_for, :precision =>2) %> dollars </td>
-        </tr>
-        <tr>
-          <th>Equivalent emissions captured</th>
-          <td><%= number_with_precision(@user.calculate_overall_emissions_for, :precision =>2) %> kg </td>
-        </tr>
-        <tr>
-          <th>Equivalent trees planted</th>
-          <td><%= number_with_precision(@user.calculate_overall_trees_for, :precision =>2) %> trees</td>
-        </tr>
-        <tr>
-          <th>Equivalent cars taken off the road</th>
-          <td><%= number_with_precision(@user.calculate_overall_cars_for, :precision =>2) %> cars</td>
-        </tr>
-      </table>
-    </p>
--->
-
-<!--    <p>
-    	<% if @user.energy_data.any? %>
-          <h2> Last 10 energy-producing hours </h2>
-          <table class="table table-striped">
-            <tr>
-              <th>Day</th>
-              <th>Solar output</th>
-              <th>Emissions saved</th>
-              <th>Fraction of a tree planted</th>
-              <th>Money accrued</th>
-            </tr>
-                <%= render :partial => 'energy_data/energy_datum.html.erb', :collection => @energy_data, :as => :energy %>
-          </table>
-        <% end %>
-    </p> -->
 <% end %>
 
 </div>

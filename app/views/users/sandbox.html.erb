@@ -139,12 +139,16 @@ $(document).ready($(function () {
           ['Output', solar_output],
         ]);
 
+        var formatter = new google.visualization.NumberFormat(
+        {fractionDigits:2, suffix: ' Wh'});
+        formatter.format(data, 1); // Apply formatter to second column
+
         var options = {
           width: 200, height: 300,
           //redFrom: 90, redTo: 100,
           //yellowFrom:75, yellowTo: 90,
           minorTicks: 5,
-          max: 200,
+          max: 220,
           animation: {
             duration: 400,
           }
@@ -292,7 +296,7 @@ $(document).ready($(function () {
     *****************************************/
 
     function real_time_update(){
-      setTimeout(real_time_update,10000);
+      setTimeout(real_time_update,5000);
       var time = Math.round(((new Date()).getTime())/1000);
 
       var targetURL = "get/user_data?time_now="+time+"&user_id="+<%= @user.id %>;
@@ -316,6 +320,8 @@ $(document).ready($(function () {
 
         //calculate increment
         var delta_change = delta*percent_hour;
+
+        console.log("Before it was "+power_before+", now it is "+power_after+" with increments of "+delta_change)
 
         //add to power_before and update html component
         var power_update = power_before + delta_change;

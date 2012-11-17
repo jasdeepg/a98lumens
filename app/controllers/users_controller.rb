@@ -1,5 +1,39 @@
 class UsersController < ApplicationController
-  before_filter :authenticate_user!, :except => [:new, :create]
+  before_filter :authenticate_user!, :except => [:new, :create, :user_inst_data, :sandbox]
+
+  # test new dashboard functionality with sample profile
+  def sandbox
+    @user = User.find(1)
+
+      client = Weatherman::Client.new
+
+      if !@user.panel_zip.nil?
+        response = client.lookup_by_woeid(lookup_woeid(@user.panel_zip))
+
+        @weather = response.description
+        @weather = clean_forecast(@weather).html_safe
+        city = response.location['city']
+        state = response.location['region']
+        @location = [city, state].join(',')
+     end
+
+      puts @user.energy_data.nil?
+      if @user.energy_data.first.nil?
+        puts "pass"
+      else
+        @energy_data = @user.energy_data.order("created_at DESC").limit(10)
+        @dayTotals = @user.consolidate_day
+        @days, @weekTotals = @user.consolidate_week
+        @monthTotals = @user.monthSum
+
+        #totals
+        @weekPowerTotal = @user.calculate_week_power_for
+      end
+
+      respond_to do |format|
+        format.html # show.html.erb
+      end
+  end
 
   # GET /users
   # GET /users.json
@@ -19,8 +53,6 @@ class UsersController < ApplicationController
   # GET /users/1.json
   def show
     @user = User.find(params[:id])
-
-    redirect_to user_path(current_user) unless current_user?(@user)
 
       client = Weatherman::Client.new
 
@@ -114,6 +146,23 @@ class UsersController < ApplicationController
     end
   end
 
+  # present data to grab for view work
+  # get/user_data
+  def user_inst_data
+    timestamp = params[:time_now]
+    user_id = params[:user_id]
+
+    before = fetch_data_at_time(user_id, timestamp)
+    after = fetch_data_at_time(user_id, (timestamp.to_i+3600))
+
+    response = Hash.new
+
+    response['before'] = before
+    response['after'] = after
+
+    render json: response.to_json
+  end
+
   private
     def clean_forecast(forecast)
       forecast_sep = forecast.split("\n");
@@ -125,6 +174,7 @@ class UsersController < ApplicationController
 
       woeid_cities[zip].to_i
     end
+
     def current_user?(user)
       if current_user=user
         true
@@ -132,5 +182,24 @@ class UsersController < ApplicationController
         false
       end
     end
+
+    def fetch_data_at_time(user_id, time_at)
+      # convert time to object
+      timestamp = Time.at(time_at.to_i)
+      # break down timestamp right now
+      year = timestamp.year
+      month = timestamp.month
+      day = timestamp.day
+      hour = timestamp.hour+1 #we're 1-indexed
+
+      # find data
+      response = EnergyDatum.where(:user_id=>user_id, :year=>year, :month=>month, :day=>day, :hour=>hour).select('power')
       
+      #response = response(:include=> :power)
+
+      #@response_list = r
+
+      return response
+    end
+
 end

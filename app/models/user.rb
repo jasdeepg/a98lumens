@@ -97,10 +97,9 @@ class User < ActiveRecord::Base
   # return array with day attributes for graph
   def consolidate_day
     t = Time.zone.now
-    today_date = Date.today
 
-    two_days_ago = today_date - 2;
-    one_days_ago = today_date - 1
+    two_days_ago = t - 2.days
+    one_days_ago = t - 1.day
 
     last_couple_days = self.energy_data.where(:year => t.year, :month => t.month, :day => one_days_ago.day) #we're 1-indexed
     dayofInterest = self.energy_data.where(:year => t.year, :month => t.month, :day => t.day, :hour => (1..(t.hour+1))) #we're 1-indexed
@@ -111,7 +110,7 @@ class User < ActiveRecord::Base
 
     #previous couple days
     last_couple_days.each do |day|
-      @dayTotals[count] = [Time.utc(day.year,day.month,day.day,hour_sim).to_i*1000, day.power/1000]
+      @dayTotals[count] = [Time.utc(day.year,day.month,day.day,day.hour).to_i*1000, day.power/1000]
       hour_sim = hour_sim + 1
       if hour_sim > 24
         hour_sim = 0

@@ -5,6 +5,7 @@ A98lumens::Application.routes.draw do
 
   root :to => "static_pages#home"
 
+  match 'sandbox', :to=> "users#sandbox", :as => "sandbox"
   match 'about', :to=> "static_pages#about", :as => "about"
   match 'contact', :to=> "static_pages#contact", :as => "contact"
   match 'projects', :to=> "static_pages#projects", :as => "projects"
@@ -27,6 +28,7 @@ A98lumens::Application.routes.draw do
 
   match '/users/edit', :to => "devise/registrations#edit", :as => "edit_user_registration"
   match '/users/new', :to => "devise/registrations#new", :as => "new_user_registration"
+  match 'get/user_data', :to => "users#user_inst_data", :as => "user_inst_data"
 
 
   # The priority is based upon order of creation:

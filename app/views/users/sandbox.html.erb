@@ -1,16 +1,15 @@
-<!-- user row -->
+<%# user row %>
 
 <div class = "dashboard">
 <div class = "row-fluid">
 
-  <!---
+  <%#
   Make everything but the header a partial and render that based on how many panels you have
   user.panels.each do |f|
-    <% render partial "dashboard", :collection=> @user.panels%>
   end 
--->
+  %>
 
-<!-- dash-header -->
+<%# dash-header %>
 
     <div class= "span2" id="user-pic">
       <p>
@@ -43,8 +42,8 @@
     <% end %>
 
 </div>
-<!--
-  -->
+
+<%# --------------- %>
 
 <% if !@user.energy_data.empty? %>
 

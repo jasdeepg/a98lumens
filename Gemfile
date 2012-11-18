@@ -13,6 +13,7 @@ gem 'therubyracer'
 gem 'annotate'
 gem 'jquery-rails', '~> 2.1'
 gem 'yahoo_weatherman'
+gem 'gon', '3.0.5'
 
 # Gems used only for assets and not required
 # in production environments by default.

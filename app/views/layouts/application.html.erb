@@ -15,6 +15,7 @@
   <%= javascript_include_tag "jquery.elastislide.js" %>
   <%= javascript_include_tag "jquery.flexslider-min.js" %>
   <%= javascript_include_tag "jquery.prettyPhoto.js" %>
+  <%= javascript_include_tag "show_helpers.js" %>
   <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
   <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
   <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-collapse.js"></script>
@@ -30,6 +31,7 @@
   <link rel="icon" href="http://www.98lumens.com/favicon.ico" type="icons/favicon.ico">
 </head>
 <body>
+  <%= include_gon %>
   <section id="header">
     <%= render 'layouts/header' %>
   </section>

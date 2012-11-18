@@ -70,6 +70,9 @@ GEM
     fastercsv (1.5.5)
     formtastic (2.2.1)
       actionpack (>= 3.0)
+    gon (3.0.5)
+      actionpack (>= 2.3.0)
+      json
     gravatar (1.0)
     has_scope (0.5.1)
     hike (1.2.1)
@@ -174,6 +177,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   devise (~> 2.0.0)
   faker (= 1.0.1)
+  gon (= 3.0.5)
   gravatar
   jquery-rails (~> 2.1)
   meta_search (>= 1.1.0.pre)

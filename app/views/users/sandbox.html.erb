@@ -4,13 +4,14 @@
 <div class = "row-fluid">
 
   <%#
-  Make everything but the header a partial and render that based on how many panels you have
+  Make everything but the header a partial and render that based on how many panels one has
   user.panels.each do |f|
   end 
   %>
 
 <%# dash-header %>
 
+<h1 style="text-align:left"><b>98Lumens solar panel dashboard</b></h1>
     <div class= "span2" id="user-pic">
       <p>
         <%= image_tag avatar_url(@user), :size =>"85x90"%>
@@ -60,34 +61,72 @@
 </div>
 <div class="row-fluid">
           <div class="span3">
-            <div class="power-output"><div id='chart_div'></div></div>
+            <div class="power-output">
+              <div id='chart_div'></div>
+              
+              <div class='summary-banner'>
+                <div class="summary-highlight">
+                  Lifetime output 
+                  <div class="hover-question" title="Over the lifetime of your panel, it has produced the amount of energy below measured in kilowatt-hours, the most common measure of electricity in the United States." style="float:right">
+                    <%= image_tag "question_mark.png", :size=>"13x13" %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="highlight-text"><%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></div>
+              
+              <div class='summary-banner'>
+                <div class="summary-highlight">
+                  Lifetime earning 
+                  <div class="hover-question" title="This is the total payback that your panel has produced since you bought it." style="float:right">
+                    <%= image_tag "question_mark.png", :size=>"13x13" %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="highlight-text">$<%= number_to_human(@user.calculate_overall_money_for, :precision => 4) %></div>
+
+              <div class='summary-banner'>
+                <div class="summary-highlight">
+                  Trees planted (<%=  number_to_human(@user.calculate_overall_trees_for, :precision => 4) %>) 
+                  <div class="hover-question" title="Trees capture approximately 12.5 kg of carbon dioxide per year." style="float:right">
+                    <%= image_tag "question_mark.png", :size=>"13x13" %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tree-count">
+                <div class="highlight-text">
+                  <% for i in 1..@user.calculate_overall_trees_for %>
+                    <%= image_tag "tree.png", :size=>"20x20" %>
+                  <% end %>
+                </div>
+              </div>
+
+              <div class='summary-banner'>
+                <div class="summary-highlight">
+                  Cars taken off road (<%=  number_to_human(@user.calculate_overall_cars_for, :precision => 2) %>) 
+                  <div class="hover-question" style="float:right" title="Cars produce on average 4200 kg of carbon dioxide a year.">
+                    <%= image_tag "question_mark.png", :size=>"13x13" %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="highlight-text">
+                <% for i in 1..@user.calculate_overall_cars_for %>
+                  <%= image_tag "car.png", :size=>"20x20" %>
+                <% end %>
+              </div>
+              
+            </div>
           </div>
           <div class="span9">
-            <div id="year-graph" style="width:100%;height:400px;"></div>
+            <div id="year-graph" style="width:100%;height:500px;"></div>
           </div>
   </div>
 
-  <div class="row-fluid highlight-boxes">
-      <div class="highlight-box" id="sun-hl" title="kWh is the unit of measurement for electricity. Your panel is responsible for <%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %> of renewable energy over the duration of its operation.">
-        <div class='highlight-banner'>
-          <div class="highlight"><%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></div>
-          <div class="sub-highlight">Lifetime output</div>
-        </div>
-      </div>
-      <div class="vertical-space"></div>
-      <div class="highlight-box" id="dollar-hl" title="The clean energy produced by your panel is being sold to a local utility and has generated $<%= number_to_human(@user.calculate_overall_money_for, :precision => 2) %> for you.">
-        <div class='highlight-banner'>
-          <div class="highlight">$<%= number_to_human(@user.calculate_overall_money_for, :precision => 4) %></div>
-          <div class="sub-highlight">Lifetime earning</div>
-        </div>
-      </div>
-      <div class="vertical-space"></div>
-      <div class="highlight-box" id="green-hl" title="The dirty energy replaced by your panel is equivalent to planting <%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %>.">
-        <div class='highlight-banner'>
-          <div class="highlight"><%= number_to_human(@user.calculate_overall_trees_for, :precision => 0, :units => {:unit => 'tree', :ten => 'trees'}) %></div>
-          <div class="sub-highlight">Equivalent trees planted</div>
-        </div>
-      </div>
+  <div class="row-fluid">
+
   </div>
 
 <% end %>
@@ -105,6 +144,7 @@ $(document).ready($(function () {
     * Globals
     ******************************************/
     var placeholder = $("#year-graph");
+    var flag = 0;
 
     //set it off
      main();
@@ -127,6 +167,8 @@ $(document).ready($(function () {
     $('#sun-hl').tooltip();
     $('#dollar-hl').tooltip();
     $('#green-hl').tooltip();
+    $('.hover-question').tooltip();
+
 
     /*****************************************
     * Graphing (Google)
@@ -136,7 +178,7 @@ $(document).ready($(function () {
       function drawChart(solar_output) {
         var data = google.visualization.arrayToDataTable([
           ['Label', 'Value'],
-          ['Output', solar_output],
+          ['Energy', solar_output],
         ]);
 
         var formatter = new google.visualization.NumberFormat(
@@ -163,14 +205,16 @@ $(document).ready($(function () {
 
     function plot_graphs(){
       // draw canvas
-      function doThis() {
-        $.plot(placeholder,[{label: "Solar output (kWh)", data: data}], options);
+      function doThis(flag) {
+        if (flag) {
+          $.plot(placeholder,[{label: "Solar output (Wh)", data: data}], options);
+        }
+        else{
+          $.plot(placeholder,[{label: "Solar output (kWh)", data: data}], options);
+        }
       } 
 
      var xyData = <%= @monthTotals.to_json %>;
-     var chartLabel = "Solar output (Wh)";
-     var weekXY = <%= @weekTotals.to_json %>;
-     var dayXY = <%= @dayTotals.to_json %>;
 
      var data = xyData;
      var options = {
@@ -203,20 +247,21 @@ $(document).ready($(function () {
 
         //button listeners
       $('#day').click(function(){
+        flag = 1;
         data = switchProf(0);
-        options.bars.show = false;
         options.lines = {show: true,
                         fillColor: "rgba(68, 177, 217, 0.75)"};
         options.bars.barWidth = 0.03*(24 * 60 * 60 * 1000);
         options.xaxis = {mode: "time", twelveHourClock: true, tickLength: 0};
 
-        doThis();
+        doThis(flag);
       });
 
       $('#month').click(function(){
+        flag = 0;
         data = switchProf(1);
-        options.lines.show = false;
         options.bars.show = true;
+        options.lines.show = false;
         options.bars.barWidth = 0.8*(24 * 60 * 60 * 1000);
         options.xaxis.timeformat = "%b-%d";
         options.xaxis.dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -225,9 +270,12 @@ $(document).ready($(function () {
       });
 
       $('#year').click(function(){
+        flag = 0;
+
         data = switchProf(2);
         options.bars.barWidth = 21*(24 * 60 * 60 * 1000);
         options.bars.show = true;
+        options.lines.show = false;
         options.xaxis.timeformat = "%b";
         options.xaxis.monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -265,9 +313,10 @@ $(document).ready($(function () {
             display: 'none',
             top: y - 30,
             left: x + 5,
-            border: '1px solid #fdd',
+            border: '1px solid black',
             padding: '2px',
-            'background-color': '#fee',
+            'background-color': 'black',
+            'color': 'white',
             opacity: 0.80
         }).appendTo("body").fadeIn(200);
     }
@@ -281,8 +330,14 @@ $(document).ready($(function () {
                   var x = item.datapoint[0].toFixed(2),
                       y = item.datapoint[1].toFixed(2);
                   
-                  showTooltip(item.pageX, item.pageY,
+                  if (flag==0){
+                    showTooltip(item.pageX, item.pageY,
                               y + " kWh");
+                  }
+                  else {
+                    showTooltip(item.pageX, item.pageY,
+                              y + " Wh");
+                  }
               }
           }
           else {

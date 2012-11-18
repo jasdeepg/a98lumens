@@ -1,3 +1,28 @@
+.highlight-text {
+	color:black;
+	font-size:30px;
+	text-align:right;
+	padding-top:5px;
+	padding-bottom:5px;
+	text-shadow: none;
+}
+
+.summary-highlight {
+	width:100%;
+	float:left;
+	color:black;
+	font-size: 14px;
+	text-shadow: none;
+}
+
+.summary-banner	{
+	width:100%;
+	background:white;
+	height:20px;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+
 .power-output	{
 	width:100%;
 	float:right;

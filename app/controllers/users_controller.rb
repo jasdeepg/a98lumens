@@ -7,6 +7,10 @@ class UsersController < ApplicationController
 
       client = Weatherman::Client.new
 
+    @hello = 'hello'
+
+    gon.hello = @hello
+
       if !@user.panel_zip.nil?
         response = client.lookup_by_woeid(lookup_woeid(@user.panel_zip))
 

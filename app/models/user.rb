@@ -110,7 +110,7 @@ class User < ActiveRecord::Base
 
     #previous couple days
     last_couple_days.each do |day|
-      @dayTotals[count] = [Time.utc(day.year,day.month,day.day,day.hour).to_i*1000, day.power/1000]
+      @dayTotals[count] = [Time.utc(day.year,day.month,day.day,day.hour).to_i*1000, day.power]
       hour_sim = hour_sim + 1
       if hour_sim > 24
         hour_sim = 0
@@ -120,7 +120,7 @@ class User < ActiveRecord::Base
 
     # create array with [hour, power]
     dayofInterest.each do |day|
-      @dayTotals[count] = [Time.utc(day.year,day.month,day.day,(day.hour)).to_i*1000, day.power/1000]
+      @dayTotals[count] = [Time.utc(day.year,day.month,day.day,(day.hour)).to_i*1000, day.power]
       count = count + 1
     end
 
@@ -226,7 +226,11 @@ class User < ActiveRecord::Base
   end
 
   def calculate_overall_cars_for
-    carConversion = (5.1*1000) #kg C02/year
+    # 1 lb = 0.453592 kg
+    # average car mileage (US) is ~12000 miles/year
+    # 350g CO2/mile (wikipedia -- http://en.wikipedia.org/wiki/Environmental_impact_of_transport#Cars)
+    # 4200 kg C02 per year
+    carConversion = 4200 #kg C02 per year
     amountC02 = calculate_overall_emissions_for
 
     amountC02/carConversion #number of cars taken off road this _year_

@@ -20,10 +20,11 @@
 
     <div class="span3" id="user-name">
         <p class="lead" id="name-text">
-          <h4><%= @user.name %></h4>
+          <div class="twitter-update"><h4 style="float:left;padding-right:10px;"><%= @user.name %></h4>
+</div>
         </p>
         <% if !@user.energy_data.empty? %>
-        <p style="font-size:16px">
+        <p style="font-size:16px;padding-top:5px;">
           Location of solar panel: <b><%= @location %></b>
         </p>
         <% end %>
@@ -62,7 +63,7 @@
 <div class="row-fluid">
           <div class="span3">
             <div class="power-output">
-              <div id='chart_div'></div>
+              <div id='chart_div' style="padding-left:17px"></div>
               
               <div class='summary-banner'>
                 <div class="summary-highlight">
@@ -169,6 +170,12 @@ $(document).ready($(function () {
     $('#green-hl').tooltip();
     $('.hover-question').tooltip();
 
+    var url = "http://www.98lumens.com"
+    var todays_power = <%= @user.last_day_power.to_json %>
+    var text = "My%20solar%20panel%20generated%20"+ todays_power[1].toFixed(2) + "%20kWh%20of%20clean,%20renewable%20energy%20today!";
+    var path_to_twitter = "http://www.twitter.com/intent/tweet?url="+url+"&text="+text+"&via=98Lumens"
+
+    $('.twitter-update').append('<a href='+path_to_twitter+'><button class="btn btn-mini"><%= image_tag("icons/twitter.png", :size=>"15x15") %>Tweet</button></a>');
 
     /*****************************************
     * Graphing (Google)

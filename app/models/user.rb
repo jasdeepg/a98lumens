@@ -29,6 +29,14 @@ class User < ActiveRecord::Base
   has_many :energy_data, :class_name => "EnergyDatum", :foreign_key => "user_id"
 
   ###################
+  # Misc
+  ###################
+
+  def last_day_power
+    @weekTotals.last
+  end
+
+  ###################
   # Performance data
   ###################
   def monthSum

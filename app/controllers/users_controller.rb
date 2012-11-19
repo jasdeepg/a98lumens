@@ -189,7 +189,7 @@ class UsersController < ApplicationController
 
     def fetch_data_at_time(user_id, time_at)
       # convert time to object
-      timestamp = Time.at(time_at.to_i)
+      timestamp = Time.zone.at(time_at.to_i)
       # break down timestamp right now
       year = timestamp.year
       month = timestamp.month

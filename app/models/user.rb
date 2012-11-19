@@ -139,7 +139,7 @@ class User < ActiveRecord::Base
   def calculate_overall_power_for
     t = Time.zone.now
 
-  	self.energy_data.where(:year=>t.year, :month=> (1..(t.month))).sum("power") # total in Wh
+  	self.energy_data.where(:year=>t.year, :month=> (1..(t.month)), :day=>(1..t.day), :hour=>(1..t.hour)).sum("power") # total in Wh
   end
 
   #calculate this week's power
@@ -164,6 +164,7 @@ class User < ActiveRecord::Base
 
   ###################
   #  Constructor
+  ###################
     
   def genericConstructorGreen(tempArray)
     @returnArray = Array.new
@@ -243,7 +244,6 @@ class User < ActiveRecord::Base
 
     amountC02/carConversion #number of cars taken off road this _year_
   end
-
 
   ###################
   # Finance data

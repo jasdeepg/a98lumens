@@ -5,38 +5,38 @@ class UsersController < ApplicationController
   def sandbox
     @user = User.find(1)
 
-      client = Weatherman::Client.new
+    client = Weatherman::Client.new
 
     @hello = 'hello'
 
     gon.hello = @hello
 
-      if !@user.panel_zip.nil?
-        response = client.lookup_by_woeid(lookup_woeid(@user.panel_zip))
+    if !@user.panel_zip.nil?
+      response = client.lookup_by_woeid(lookup_woeid(@user.panel_zip))
 
-        @weather = response.description
-        @weather = clean_forecast(@weather).html_safe
-        city = response.location['city']
-        state = response.location['region']
-        @location = [city, state].join(',')
-     end
+      @weather = response.description
+      @weather = clean_forecast(@weather).html_safe
+      city = response.location['city']
+      state = response.location['region']
+      @location = [city, state].join(',')
+    end
 
-      puts @user.energy_data.nil?
-      if @user.energy_data.first.nil?
-        puts "pass"
-      else
-        @energy_data = @user.energy_data.order("created_at DESC").limit(10)
-        @dayTotals = @user.consolidate_day
-        @days, @weekTotals = @user.consolidate_week
-        @monthTotals = @user.monthSum
+    puts @user.energy_data.nil?
+    if @user.energy_data.first.nil?
+      puts "pass"
+    else
+      @energy_data = @user.energy_data.order("created_at DESC").limit(10)
+      @dayTotals = @user.consolidate_day
+      @days, @weekTotals = @user.consolidate_week
+      @monthTotals = @user.monthSum
 
-        #totals
-        @weekPowerTotal = @user.calculate_week_power_for
-      end
+      #totals
+      @weekPowerTotal = @user.calculate_week_power_for
+    end
 
-      respond_to do |format|
-        format.html # show.html.erb
-      end
+    respond_to do |format|
+      format.html # show.html.erb
+    end
   end
 
   # GET /users

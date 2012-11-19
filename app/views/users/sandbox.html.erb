@@ -368,7 +368,7 @@ $(document).ready($(function () {
       var power_after = 0;
 
       $.get(targetURL, function(data){
-        power_before = data.before[0].power;
+        power_before = data.before[0].power; 
         power_after = data.after[0].power;
 
         // after getting data before and after, find increment between them, delta-naught
@@ -383,11 +383,11 @@ $(document).ready($(function () {
         //calculate increment
         var delta_change = delta*percent_hour;
 
-        console.log("Before it was "+power_before+", now it is "+power_after+" with increments of "+delta_change)
+        console.log(time + "Before it was "+power_before+", now it is "+power_after+" with increments of "+delta_change)
 
         //add to power_before and update html component
         var power_update = power_before + delta_change;
-        //$('.power-output').append('<p>'+power_update.toFixed(3)+'</p>');
+
         drawChart(power_update);
       })
     }

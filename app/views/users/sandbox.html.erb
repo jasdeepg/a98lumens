@@ -72,7 +72,7 @@
                   </div>
               </div>
 
-              <div class="highlight-text"><%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></div>
+              <div class="highlight-text"><%= number_to_human(@user.calculate_overall_power_for, :precision =>5, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></div>
               
               <div class='summary-banner'>
                   Lifetime earning 
@@ -82,6 +82,15 @@
               </div>
 
               <div class="highlight-text">$<%= number_to_human(@user.calculate_overall_money_for, :precision => 4) %></div>
+
+              <div class='summary-banner'>
+                  Lifetime C02 saved 
+                  <div class="hover-question" title="By replacing dirty energy, you've prevented the production of carbon dioxide." style="float:right">
+                    <%= image_tag "question_mark.png", :size=>"13x13" %>
+                  </div>
+              </div>
+
+              <div class="highlight-text"><%= number_to_human(@user.calculate_overall_emissions_for, :precision => 5, :units => {:unit => 'kg'}) %></div>
 
               <div class='summary-banner'>
                   Trees planted (<%=  number_to_human(@user.calculate_overall_trees_for, :precision => 4) %>) 

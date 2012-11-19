@@ -66,34 +66,28 @@
               <div id='chart_div' style="padding-left:17px"></div>
               
               <div class='summary-banner'>
-                <div class="summary-highlight">
                   Lifetime output 
                   <div class="hover-question" title="Over the lifetime of your panel, it has produced the amount of energy below measured in kilowatt-hours, the most common measure of electricity in the United States." style="float:right">
                     <%= image_tag "question_mark.png", :size=>"13x13" %>
                   </div>
-                </div>
               </div>
 
               <div class="highlight-text"><%= number_to_human(@user.calculate_overall_power_for, :precision =>2, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></div>
               
               <div class='summary-banner'>
-                <div class="summary-highlight">
                   Lifetime earning 
                   <div class="hover-question" title="This is the total payback that your panel has produced since you bought it." style="float:right">
                     <%= image_tag "question_mark.png", :size=>"13x13" %>
                   </div>
-                </div>
               </div>
 
               <div class="highlight-text">$<%= number_to_human(@user.calculate_overall_money_for, :precision => 4) %></div>
 
               <div class='summary-banner'>
-                <div class="summary-highlight">
                   Trees planted (<%=  number_to_human(@user.calculate_overall_trees_for, :precision => 4) %>) 
                   <div class="hover-question" title="Trees capture approximately 12.5 kg of carbon dioxide per year." style="float:right">
                     <%= image_tag "question_mark.png", :size=>"13x13" %>
                   </div>
-                </div>
               </div>
 
               <div class="tree-count">
@@ -105,12 +99,10 @@
               </div>
 
               <div class='summary-banner'>
-                <div class="summary-highlight">
                   Cars taken off road (<%=  number_to_human(@user.calculate_overall_cars_for, :precision => 2) %>) 
                   <div class="hover-question" style="float:right" title="Cars produce on average 4200 kg of carbon dioxide a year.">
                     <%= image_tag "question_mark.png", :size=>"13x13" %>
                   </div>
-                </div>
               </div>
 
               <div class="highlight-text">

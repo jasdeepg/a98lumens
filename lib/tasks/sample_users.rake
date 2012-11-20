@@ -1,6 +1,20 @@
 namespace :db do
 
 #load sample data from "bad solar" location -- Princeton, NJ
+  desc "create solar panels"
+  task team_panels: :environment do
+    Panel.create(
+      :user_id=>1,
+      :panel_num=>1,
+      :power=>250
+      )
+    Panel.create(
+      :user_id=>1,
+      :panel_num=>2,
+      :power=>250
+      )
+  end
+
   desc "load user data from csv"
   task team_data: :environment do
     require 'csv'
@@ -13,7 +27,18 @@ namespace :db do
         :year => 2012,
         :hour => row[2],
         :power => row[3],
-        :user_id => 1,
+        :panel_id => 1,
+      )
+    end
+    CSV.foreach("public/guangda.csv") do |row|
+      puts [row[0], row[1], row[2], row[3]].join(',')
+      EnergyDatum.create(
+        :month => row[0],
+        :day => row[1],
+        :year => 2012,
+        :hour => row[2],
+        :power => row[3],
+        :panel_id => 2,
       )
     end
     # CSV.foreach("/Users/bhander/Dropbox/workspace/rails_projects/a98lumens/public/chirath.csv") do |row|

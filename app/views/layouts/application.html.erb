@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>98lumens - Solar power for everyone!</title>
+  <%= include_gon %>
   <%= javascript_include_tag "jquery-1.8.1.js" %>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= csrf_meta_tags %>
@@ -33,7 +34,6 @@
   <link rel="icon" href="http://www.98lumens.com/favicon.ico" type="icons/favicon.ico">
 </head>
 <body>
-  <%= include_gon %>
   <section id="header">
     <%= render 'layouts/header' %>
   </section>

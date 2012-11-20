@@ -7,6 +7,8 @@ class UsersController < ApplicationController
 
     client = Weatherman::Client.new
 
+    @hello = 'hello'
+
     @potential_trees = (463000*0.00069)*0.08 - @user.calculate_overall_trees_for;
     @potential_cars = (463000*0.00069)/4200 - @user.calculate_overall_cars_for;
 
@@ -32,6 +34,13 @@ class UsersController < ApplicationController
       #totals
       @weekPowerTotal = @user.calculate_week_power_for
     end
+
+    # gon variables
+    gon.user = @user
+    gon.dayTotals = @dayTotals
+    gon.monthTotals = @monthTotals
+    gon.weekTotals = @weekTotals
+    gon.overall_power_for = @user.calculate_overall_power_for
 
     respond_to do |format|
       format.html # show.html.erb

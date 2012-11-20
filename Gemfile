@@ -16,6 +16,7 @@ gem 'yahoo_weatherman'
 gem 'gon', '3.0.5'
 gem 'oauth'
 gem 'twitter'
+gem 'taps'
 
 # Gems used only for assets and not required
 # in production environments by default.

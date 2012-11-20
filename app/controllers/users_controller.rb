@@ -5,34 +5,45 @@ class UsersController < ApplicationController
   def sandbox
     @user = User.find(1)
 
+    if defined? params[:energy_data][:panel_id]
+      select_option = params[:energy_data][:panel_id]
+    else
+      select_option = 0
+    end
+
+    if (select_option.to_i<1 || select_option.nil?)  # best way to check if a variable is undefined?
+      puts 'first condition'
+      @panel = @user.panels.where(:panel_num=>1).first
+    else
+      @panel = @user.panels.where(:panel_num=>params[:energy_data][:panel_id]).first
+    end
+
     client = Weatherman::Client.new
 
-    @hello = 'hello'
-
-    @potential_trees = (463000*0.00069)*0.08 - @user.calculate_overall_trees_for;
-    @potential_cars = (463000*0.00069)/4200 - @user.calculate_overall_cars_for;
+    @potential_trees = (463000*0.00069)*0.08 - @panel.calculate_overall_trees_for;
+    @potential_cars = (463000*0.00069)/4200 - @panel.calculate_overall_cars_for;
 
     if !@user.panel_zip.nil?
       response = client.lookup_by_woeid(lookup_woeid(@user.panel_zip))
 
       @weather = response.description
+      @latitude = response.latitude
+      @longitude = response.longitude
       @weather = clean_forecast(@weather).html_safe
       city = response.location['city']
       state = response.location['region']
       @location = [city, state].join(',')
     end
 
-    puts @user.energy_data.nil?
-    if @user.energy_data.first.nil?
+    if @panel.energy_data.first.nil?
       puts "pass"
     else
-      @energy_data = @user.energy_data.order("created_at DESC").limit(10)
-      @dayTotals = @user.consolidate_day
-      @days, @weekTotals = @user.consolidate_week
-      @monthTotals = @user.monthSum
-
-      #totals
-      @weekPowerTotal = @user.calculate_week_power_for
+      puts "dayTotal"
+      @dayTotals = @panel.consolidate_day
+      puts "weekTotal"
+      @days, @weekTotals = @panel.consolidate_week
+      puts "yearTotal"
+      @monthTotals = @panel.monthSum
     end
 
     # gon variables
@@ -40,7 +51,10 @@ class UsersController < ApplicationController
     gon.dayTotals = @dayTotals
     gon.monthTotals = @monthTotals
     gon.weekTotals = @weekTotals
-    gon.overall_power_for = @user.calculate_overall_power_for
+    gon.overall_power_for = @panel.calculate_overall_power_for
+    gon.panel_id = @panel.panel_num
+    gon.latitude = @latitude
+    gon.longitude = @longitude
 
     respond_to do |format|
       format.html # show.html.erb
@@ -163,9 +177,16 @@ class UsersController < ApplicationController
   def user_inst_data
     timestamp = params[:time_now]
     user_id = params[:user_id]
+    panel_id = params[:panel_id]
 
-    before = fetch_data_at_time(user_id, timestamp)
-    after = fetch_data_at_time(user_id, (timestamp.to_i+3600))
+    if (params[:index].to_i<1 || params[:index].nil?)  # best way to check if a variable is undefined?
+      panel_id = 1
+    else
+      panel_id = params[:panel_id]
+    end
+
+    before = fetch_data_at_time(user_id, timestamp, panel_id)
+    after = fetch_data_at_time(user_id, (timestamp.to_i+3600), panel_id)
 
     response = Hash.new
 
@@ -195,7 +216,7 @@ class UsersController < ApplicationController
       end
     end
 
-    def fetch_data_at_time(user_id, time_at)
+    def fetch_data_at_time(user_id, time_at, panel_id)
       # convert time to object
       timestamp = Time.zone.at(time_at.to_i)
       # break down timestamp right now
@@ -205,7 +226,9 @@ class UsersController < ApplicationController
       hour = timestamp.hour+1 #we're 1-indexed
 
       # find data
-      response = EnergyDatum.where(:user_id=>user_id, :year=>year, :month=>month, :day=>day, :hour=>hour).select('power')
+      # HARDCODING PANEL #1 for test
+      panel = Panel.where(:user_id=>user_id, :panel_num=>panel_id).first
+      response = panel.energy_data.where(:year=>year, :month=>month, :day=>day, :hour=>hour).select('power')
       
       #response = response(:include=> :power)
 

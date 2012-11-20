@@ -11,12 +11,12 @@
 #  user_id    :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  panel_id   :integer
 #
 
 class EnergyDatum < ActiveRecord::Base
-  attr_accessible :day, :hour, :month, :power, :user_id, :year
-  belongs_to :user
-
+  attr_accessible :day, :hour, :month, :power, :user_id, :year, :panel_id
+  belongs_to :panel
 
   ###################
   # Green data

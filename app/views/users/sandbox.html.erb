@@ -2,17 +2,17 @@
 <%# user row %>
 
 <div class = "dashboard">
-<div class = "row-fluid">
+  <div class = "row-fluid">
 
-  <%#
+<%#
   Make everything but the header a partial and render that based on how many panels one has
   user.panels.each do |f|
   end 
-  %>
+%>
 
 <%# dash-header %>
 
-<h1 style="text-align:left"><b>98Lumens solar panel dashboard</b></h1>
+    <h1 style="text-align:left"><b>98Lumens solar panel dashboard</b></h1>
     <div class= "span2" id="user-pic">
       <p>
         <%= image_tag avatar_url(@user), :size =>"85x90"%>
@@ -22,23 +22,44 @@
     <div class="span3" id="user-name">
         <p class="lead" id="name-text">
           <div class="twitter-update"><h4 style="float:left;padding-right:10px;"><%= @user.name %></h4>
-</div>
+          </div>
         </p>
-        <% if !@user.energy_data.empty? %>
+        <% if !@panel.energy_data.empty? %>
         <p style="font-size:16px;padding-top:5px;">
           Location of solar panel: <b><%= @location %></b>
+          
+          <%# To change solar panel (change to dropdown later).
+              Need to have this post to sandbox action with index
+              param. 
+          %>
+          <% if @user.panels.length >1 %>
+            <%= form_tag({:controller => "users", :action=>"sandbox", :method=>"post"}, {:class=>'panel-form'}) do %> 
+              <!--<div class="field">
+                <label>Panel # :</label>
+                <%= text_field_tag :index %>
+              </div>-->
+            <%= collection_select(:energy_data, :panel_id, @user.panels.all, :panel_num, :name, options={:prompt=>"Select a panel"}, html_options={:class => 'panel-select', :onchange => ("$(this).parent('form').submit();")}) %>
+              <div class="actions">
+              </div>
+            <% end %>
+          <% end %>
+
+          </ul>
         </p>
         <% end %>
     </div>
 
-    <% if !@user.energy_data.empty? %>
+    <div id="map_canvas" style="float:left;width:33%;height:100px"></div>
+
+
+    <% if !@user.panels.first.energy_data.empty? %>
     <div id="weather">
       <%= @location %>
       <%= @weather %>
     </div>
     <% end %>
 
-    <% if @user.energy_data.empty? %>
+    <% if @panel.energy_data.empty? %>
       <p style="font-size:16px">
         <%= link_to "Learn how you can go solar and activate this dashboard", consult_path, :class=>"btn btn-success btn-large dash-btn" %>
       </p>
@@ -46,128 +67,15 @@
 
 </div>
 
-<%# --------------- %>
+  <%# --------------- %>
 
-<% if !@user.energy_data.empty? %>
+  <%# render a partial %>
 
-<div class="current_production"></div>
-  <!-- chart and highlight row -->
-<div class="row-fluid">
-        <p>
-          <div class="btn-group  pull-right" data-toggle="buttons-radio">
-            <button type="button" class="btn" id="day">Today</button>
-            <button type="button" class="btn" id="month" >Last 30 days</button>
-            <button type="button" class="btn" id="year">This year</button>
-          </div>
-        <p>
-</div>
-<div class="row-fluid">
-          <div class="span3">
-            <div class="power-output">
-              <div id='chart_div' style="padding-left:17px"></div>
-              
-              <div class='summary-banner'>
-                  Lifetime output 
-                  <div class="hover-question" title="Over the lifetime of your panel, it has produced the amount of energy below measured in kilowatt-hours, the most common measure of electricity in the United States." style="float:right">
-                    <%= image_tag "question_mark.png", :size=>"13x13" %>
-                  </div>
-              </div>
+<% if !@panel.energy_data.empty? %>
 
-              <div class="highlight-text power-read"></div>
-              
-              <div class='summary-banner'>
-                  Lifetime earning 
-                  <div class="hover-question" title="This is the total payback that your panel has produced since you bought it." style="float:right">
-                    <%= image_tag "question_mark.png", :size=>"13x13" %>
-                  </div>
-              </div>
-
-              <div class="highlight-text money-read"></div>
-
-              <div class='summary-banner'>
-                  Lifetime C02 saved 
-                  <div class="hover-question" title="By replacing dirty energy, you've prevented the production of carbon dioxide." style="float:right">
-                    <%= image_tag "question_mark.png", :size=>"13x13" %>
-                  </div>
-              </div>
-
-              <div class="highlight-text emissions-read"></div>
-
-              <div class='summary-banner'>
-                  Trees planted (<%=  number_to_human(@user.calculate_overall_trees_for, :precision => 4) %>) 
-                  <div class="hover-question" title="Trees capture approximately 12.5 kg of carbon dioxide per year. The transparent trees are projected." style="float:right">
-                    <%= image_tag "question_mark.png", :size=>"13x13" %>
-                  </div>
-              </div>
-
-              <div class="tree-count">
-                <div class="highlight-text">
-                  <% for i in 1..@user.calculate_overall_trees_for %>
-                    <%= image_tag "tree.png", :size=>"20x20" %>
-                  <% end %>
-
-                  <% for i in 1..(@potential_trees) %>
-                    <span style="opacity:.2"><%= image_tag "tree.png", :size=>"20x20", :class=>"tree_potential" %></span>
-                  <% end %>
-                </div>
-              </div>
-
-              <div class='summary-banner'>
-                  Cars taken off road (<%=  number_to_human(@user.calculate_overall_cars_for, :precision => 2) %>) 
-                  <div class="hover-question" style="float:right" title="Cars produce on average 4200 kg of carbon dioxide a year.">
-                    <%= image_tag "question_mark.png", :size=>"13x13" %>
-                  </div>
-              </div>
-
-              <div class="highlight-text">
-                <% for i in 1..@user.calculate_overall_cars_for %>
-                  <%= image_tag "car.png", :size=>"20x20" %>
-                <% end %>
-
-                <% for i in 1..(@potential_cars) %>
-                  <span style="opacity:.2"><%= image_tag "car.png", :size=>"20x20", :class=>"tree_potential" %></span>
-                <% end %>
-              </div>
-              
-            </div>
-          </div>
-          <div class="span9">
-            <div id="year-graph" style="width:100%;height:500px;"></div>
-          </div>
-  </div>
-
-  <div class="row-fluid">
-
-  </div>
+  <%# does this pass the panel object? how do I access it on the other side? @panel? %>
+  <%= render :partial => "dash_content", :locals => { :panel => @user.panels.where(:panel_num=>1) } %>
 
 <% end %>
 
 </div>
-
-
-<% javascript_tag do %>
- 
-<% end %>
-
-<script type="text/javascript">
-$(document).ready($(function(){
-
-    /*****************************************
-    * Misc
-    ******************************************/
-
-      // divs that are tooltippable
-    $('#sun-hl').tooltip();
-    $('#dollar-hl').tooltip();
-    $('#green-hl').tooltip();
-    $('.hover-question').tooltip();
-
-    var url = "http://www.98lumens.com"
-    var todays_power = <%= @user.last_day_power.to_json %>
-    var text = "My%20solar%20panel%20generated%20"+ todays_power[1].toFixed(2) + "%20kWh%20of%20clean,%20renewable%20energy%20today!";
-    var path_to_twitter = "http://www.twitter.com/intent/tweet?url="+url+"&text="+text+"&via=98Lumens"
-
-    $('.twitter-update').append('<a href='+path_to_twitter+'><button class="btn btn-mini"><%= image_tag("icons/twitter.png", :size=>"15x15") %>Tweet</button></a>');
-
-}));
-</script>

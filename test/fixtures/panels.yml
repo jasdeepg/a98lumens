@@ -1,0 +1,31 @@
+# == Schema Information
+#
+# Table name: panels
+#
+#  id             :integer          not null, primary key
+#  power          :float
+#  code           :string(255)
+#  date_purchased :integer
+#  date_online    :integer
+#  user_id        :integer
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  panel_ref      :integer
+#  panel_num=     :integer
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  power: 1.5
+  code: MyString
+  date_purchased: 2012-11-19 19:40:55
+  date_online: 2012-11-19 19:40:55
+  user_id: 1
+
+two:
+  power: 1.5
+  code: MyString
+  date_purchased: 2012-11-19 19:40:55
+  date_online: 2012-11-19 19:40:55
+  user_id: 1

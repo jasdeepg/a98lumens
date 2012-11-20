@@ -72,7 +72,7 @@
                   </div>
               </div>
 
-              <div class="highlight-text"><%= number_to_human(@user.calculate_overall_power_for, :precision =>5, :units => {:unit => 'Wh', :thousand => 'kWh', :million => 'MWh'}) %></div>
+              <div class="highlight-text power-read"></div>
               
               <div class='summary-banner'>
                   Lifetime earning 
@@ -81,7 +81,7 @@
                   </div>
               </div>
 
-              <div class="highlight-text">$<%= number_to_human(@user.calculate_overall_money_for, :precision => 4) %></div>
+              <div class="highlight-text money-read"></div>
 
               <div class='summary-banner'>
                   Lifetime C02 saved 
@@ -90,11 +90,11 @@
                   </div>
               </div>
 
-              <div class="highlight-text"><%= number_to_human(@user.calculate_overall_emissions_for, :precision => 5, :units => {:unit => 'kg'}) %></div>
+              <div class="highlight-text emissions-read"></div>
 
               <div class='summary-banner'>
                   Trees planted (<%=  number_to_human(@user.calculate_overall_trees_for, :precision => 4) %>) 
-                  <div class="hover-question" title="Trees capture approximately 12.5 kg of carbon dioxide per year." style="float:right">
+                  <div class="hover-question" title="Trees capture approximately 12.5 kg of carbon dioxide per year. The transparent trees are projected." style="float:right">
                     <%= image_tag "question_mark.png", :size=>"13x13" %>
                   </div>
               </div>
@@ -103,6 +103,10 @@
                 <div class="highlight-text">
                   <% for i in 1..@user.calculate_overall_trees_for %>
                     <%= image_tag "tree.png", :size=>"20x20" %>
+                  <% end %>
+
+                  <% for i in 1..(@potential_trees) %>
+                    <span style="opacity:.2"><%= image_tag "tree.png", :size=>"20x20", :class=>"tree_potential" %></span>
                   <% end %>
                 </div>
               </div>
@@ -117,6 +121,10 @@
               <div class="highlight-text">
                 <% for i in 1..@user.calculate_overall_cars_for %>
                   <%= image_tag "car.png", :size=>"20x20" %>
+                <% end %>
+
+                <% for i in 1..(@potential_cars) %>
+                  <span style="opacity:.2"><%= image_tag "car.png", :size=>"20x20", :class=>"tree_potential" %></span>
                 <% end %>
               </div>
               
@@ -147,6 +155,7 @@ $(document).ready($(function () {
     ******************************************/
     var placeholder = $("#year-graph");
     var flag = 0;
+    var base_power = <%= @user.calculate_overall_power_for %>
 
     //set it off
      main();
@@ -390,6 +399,26 @@ $(document).ready($(function () {
         var power_update = power_before + delta_change;
 
         drawChart(power_update);
+
+        //update other components
+        var overall_power_increment = power_update*((5/60)/60); // P*delta_t = power_update * (5 seconds/60 seconds)/60 minutes (aka percentage of the hour)
+        var overall_money_increment = (0.126/1000)*overall_power_increment;
+        var overall_emissions_increment = 0.00069*overall_power_increment; 
+
+        if (base_power != <%= @user.calculate_overall_power_for %>) {
+          base_power = <%= @user.calculate_overall_power_for %>;
+        }
+
+        var overall_power = base_power + overall_power_increment;
+        overall_power = overall_power/1000;
+
+        var overall_money = base_power*(0.126/1000) + overall_money_increment;
+
+        var overall_emissions = base_power*(0.00069) + overall_emissions_increment;
+
+        $('.power-read').html(overall_power.toFixed(3)+" kWh");
+        $('.money-read').html("$"+overall_money.toFixed(2));
+        $('.emissions-read').html(overall_emissions.toFixed(3)+" kg");
       })
     }
 

@@ -13,7 +13,7 @@ A98lumens::Application.configure do
 	  :port  => 587,
 	  :domain => "smtp.gmail.com",
 	  :user_name  => "jas@98lumens.com",
-	  :password  => "tazspike1",
+	  :password  => "password",
 	  :authentication  => :login
 	}
 

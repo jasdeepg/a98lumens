@@ -13,4 +13,7 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+<<<<<<< HEAD
 config/environment.rb
+=======
+>>>>>>> a3cfd42e45301125b298c8a67b47c771731394bd

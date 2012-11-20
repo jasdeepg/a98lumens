@@ -20,7 +20,7 @@ namespace :db do
     require 'csv'
 
     CSV.foreach("public/jasdeep.csv") do |row|
-      puts [row[0], row[1], row[2], row[3]].join(',')
+      puts [row[0], row[1], row[2], row[3]].join(',') 
       EnergyDatum.create(
         :month => row[0],
         :day => row[1],

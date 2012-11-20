@@ -16,6 +16,7 @@ $(document).ready($(function () {
         plot_graphs();
         //plot_google();
         real_time_update();
+        initialize();
     }
      //start real time update of solar output
 
@@ -25,7 +26,7 @@ $(document).ready($(function () {
 
     function plot_graphs(){
       // draw canvas
-      function doThis(flag) {
+      function doThis(flag, data) {
         if (flag) {
           $.plot(placeholder,[{label: "Solar output (Wh)", data: data}], options);
         }
@@ -37,7 +38,6 @@ $(document).ready($(function () {
      var xyData = gon.monthTotals;
 
      var data = xyData;
-     alert(data)
      var options = {
           //lines: {show:true},
           points: {show:false},
@@ -64,22 +64,29 @@ $(document).ready($(function () {
         };
 
         // first plot
-        doThis();
+        doThis(flag, data);
 
         //button listeners
       $('#day').click(function(){
-        flag = 1;
-        data = switchProf(0);
-        options.lines = {show: true,
-                        fillColor: "rgba(68, 177, 217, 0.75)"};
-        options.bars.barWidth = 0.03*(24 * 60 * 60 * 1000);
-        options.xaxis = {mode: "time", twelveHourClock: true, tickLength: 0};
+        flag = 1; //to switch to Wh in label
 
-        doThis(flag);
+        data = switchProf(0);
+
+        console.log(data)
+
+        options.lines = {show: false};
+        options.bars.barWidth = 0.035*(24 * 60 * 60 * 1000);
+        options.xaxis = {
+          mode: "time", 
+          twelveHourClock: true, 
+          tickLength: 0};
+
+        doThis(flag, data);
       });
 
       $('#month').click(function(){
         flag = 0;
+
         data = switchProf(1);
         options.bars.show = true;
         options.lines.show = false;
@@ -87,7 +94,7 @@ $(document).ready($(function () {
         options.xaxis.timeformat = "%b-%d";
         options.xaxis.dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-        doThis();
+        doThis(flag, data);
       });
 
       $('#year').click(function(){
@@ -100,7 +107,7 @@ $(document).ready($(function () {
         options.xaxis.timeformat = "%b";
         options.xaxis.monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-        doThis();
+        doThis(flag, data);
       });
 
       //function to switch on button press
@@ -205,7 +212,7 @@ $(document).ready($(function () {
       setTimeout(real_time_update,5000);
       var time = Math.round(((new Date()).getTime())/1000);
 
-      var targetURL = "get/user_data?time_now="+time+"&user_id="+ gon.user.id;
+      var targetURL = "get/user_data?time_now="+time+"&user_id="+gon.user.id+"&panel_id="+gon.panel;
       // first call to get data right now
 
       var power_before = 0;
@@ -255,4 +262,32 @@ $(document).ready($(function () {
         $('.emissions-read').html(overall_emissions.toFixed(3)+" kg");
       });
     };
+
+    /*****************************************
+    * Google maps
+    *****************************************/
+    function initialize() {
+        var longi = 39.8282;
+        var lati = -98.5795
+
+        var mapOptions = {
+          center: new google.maps.LatLng(gon.latitude, gon.longitude),
+          zoom: 3,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          panControl: false,
+          scaleControl: false,
+          mapTypeControl: false,
+          streetViewControl: false
+        };
+        var map = new google.maps.Map(document.getElementById("map_canvas"),
+            mapOptions);
+
+        var marker = new google.maps.Marker({
+          map: map,
+          position: new google.maps.LatLng(gon.latitude, gon.longitude),
+          visible: true,
+          title: 'What up!'
+         });
+    }
+
 }));

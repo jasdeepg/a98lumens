@@ -19,6 +19,7 @@
 #  superadmin             :boolean          default(FALSE), not null
 #  Location               :string(255)
 #  panel_zip              :string(255)
+#  state_id               :integer
 #
 
 require 'test_helper'

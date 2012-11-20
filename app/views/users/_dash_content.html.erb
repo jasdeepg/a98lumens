@@ -1,0 +1,106 @@
+  <!-- chart and highlight row -->
+<div class="row-fluid">
+        <p>
+          <div class="btn-group  pull-right" data-toggle="buttons-radio">
+            <button type="button" class="btn" id="day">Today</button>
+            <button type="button" class="btn" id="month" >Last 30 days</button>
+            <button type="button" class="btn" id="year">This year</button>
+          </div>
+        <p>
+</div>
+
+<div class="row-fluid">
+          <div class="span3">
+            <div class="power-output">
+              <div id='chart_div' style="padding-left:17px"></div>
+              
+              <div class='summary-banner'>
+                  Lifetime output 
+                  <div class="hover-question" title="Over th=e lifetime of your panel, it has produced the amount of energy below measured in kilowatt-hours, the most common measure of electricity in the United States." style="float:right">
+                    <%= image_tag "question_mark.png", :size=>"13x13" %>
+                  </div>
+              </div>
+
+              <div class="highlight-text power-read"></div>
+              
+              <div class='summary-banner'>
+                  Lifetime earning 
+                  <div class="hover-question" title="This is the total payback that your panel has produced since you bought it." style="float:right">
+                    <%= image_tag "question_mark.png", :size=>"13x13" %>
+                  </div>
+              </div>
+
+              <div class="highlight-text money-read"></div>
+
+              <div class='summary-banner'>
+                  Lifetime C02 offset
+                  <div class="hover-question" title="By replacing dirty energy, you've prevented the production of carbon dioxide." style="float:right">
+                    <%= image_tag "question_mark.png", :size=>"13x13" %>
+                  </div>
+              </div>
+
+              <div class="highlight-text emissions-read"></div>
+
+              <div class='summary-banner'>
+                  Trees planted (<%=  number_to_human(@panel.calculate_overall_trees_for, :precision => 4) %>) 
+                  <div class="hover-question" title="Trees capture approximately 12.5 kg of carbon dioxide per year. The transparent trees are projected." style="float:right">
+                    <%= image_tag "question_mark.png", :size=>"13x13" %>
+                  </div>
+              </div>
+
+              <div class="tree-count">
+                <div class="highlight-text">
+                  <% for i in 1..(@panel.calculate_overall_trees_for) %>
+                    <%= image_tag "tree.png", :size=>"20x20" %>
+                  <% end %>
+
+                  <% for i in 1..(@potential_trees) %>
+                    <span style="opacity:.2"><%= image_tag "tree.png", :size=>"20x20", :class=>"tree_potential" %></span>
+                  <% end %>
+                </div>
+              </div>
+
+              <div class='summary-banner'>
+                  Cars taken off road (<%=  number_to_human(@panel.calculate_overall_cars_for, :precision => 2) %>) 
+                  <div class="hover-question" style="float:right" title="Cars produce on average 4200 kg of carbon dioxide a year.">
+                    <%= image_tag "question_mark.png", :size=>"13x13" %>
+                  </div>
+              </div>
+
+              <div class="highlight-text">
+                <% for i in 1..@panel.calculate_overall_cars_for %>
+                  <%= image_tag "car.png", :size=>"20x20" %>
+                <% end %>
+
+                <% for i in 1..(@potential_cars) %>
+                  <span style="opacity:.2"><%= image_tag "car.png", :size=>"20x20", :class=>"tree_potential" %></span>
+                <% end %>
+              </div>
+              
+            </div>
+          </div>
+          <div class="span9">
+            <div id="year-graph" style="width:100%;height:500px;"></div>
+          </div>
+  </div>
+
+<script type="text/javascript">
+  $(document).ready($(function(){
+
+      /*****************************************
+      * Misc
+      ******************************************/
+
+      // divs that are tooltippable
+      $('.hover-question').tooltip();
+
+      // Twitter redirection
+      var url = "http://www.98lumens.com"
+      var todays_power = <%= @panel.last_day_power.to_json %>
+      var text = "My%20solar%20panel%20generated%20"+ todays_power[1].toFixed(2) + "%20kWh%20of%20clean,%20renewable%20energy%20today!";
+      var path_to_twitter = "http://www.twitter.com/intent/tweet?url="+url+"&text="+text+"&via=98Lumens"
+
+      $('.twitter-update').append('<a href='+path_to_twitter+'><button class="btn btn-mini"><%= image_tag("icons/twitter.png", :size=>"15x15") %>Tweet daily stats</button></a>');
+
+  }));
+</script>

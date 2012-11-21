@@ -38,7 +38,7 @@
                 <label>Panel # :</label>
                 <%= text_field_tag :index %>
               </div>-->
-            <%= collection_select(:energy_data, :panel_id, @user.panels.all, :panel_num, :name, options={:prompt=>"Select a panel"}, html_options={:class => 'panel-select', :onchange => ("$(this).parent('form').submit();")}) %>
+            <%= collection_select(:energy_data, :panel_id, @user.panels.all, :panel_num, :name, options={:prompt=>"Veiwing "+ @panel.name}, html_options={:class => 'panel-select', :onchange => ("$(this).parent('form').submit();")}) %>
               <div class="actions">
               </div>
             <% end %>

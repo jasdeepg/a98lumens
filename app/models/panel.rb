@@ -134,7 +134,9 @@ class Panel < ActiveRecord::Base
   def calculate_overall_power_for
     t = Time.zone.now
 
-  	self.energy_data.where(:year=>t.year, :month=> (1..(t.month)), :day=>(1..t.day), :hour=>(1..t.hour)).sum("power") # total in Wh
+    until_today = self.energy_data.where(:year=>t.year, :month=> (1..(t.month)), :day=>(1..t.day-1)).sum("power") # total in Wh
+    today = self.energy_data.where(:year=>t.year, :month=>t.month, :day=>t.day, :hour=>(1..t.hour)).sum("power") # total in Wh
+    until_today + today
   end
 
   #calculate this week's power

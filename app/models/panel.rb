@@ -76,7 +76,7 @@ class Panel < ActiveRecord::Base
   		if (tmp_refDay - subCount) > 0
   			@dateCount << [tmp_refDay - subCount, refMonth]
   		else
-        tmp_refDay = 31
+      tmp_refDay = 30
   			refMonth = refMonth - 1
   			subCount = 0
   			@dateCount << [tmp_refDay - subCount, refMonth]
@@ -87,11 +87,12 @@ class Panel < ActiveRecord::Base
   	arrayCount = 0
 
   	@dateCount.each do |day, month|
+      puts day, " ", month
       temp_Obj = self.energy_data.where(:day=>day, :month=>month).last
   		if month== t.month && day == t.day
-        @weekTotals[arrayCount] = [Time.utc(temp_Obj.year, temp_Obj.month, temp_Obj.day).to_i*1000, self.energy_data.where(:day => day, :month => month, :hour=>(1..t.hour)).sum("power")/1000]
+        @weekTotals[arrayCount] = [Time.utc(2012, temp_Obj.month, temp_Obj.day).to_i*1000, self.energy_data.where(:day => day, :month => month, :hour=>(1..t.hour)).sum("power")/1000]
       else
-        @weekTotals[arrayCount] = [Time.utc(temp_Obj.year, temp_Obj.month, temp_Obj.day).to_i*1000, self.energy_data.where("day=#{day} AND month=#{month}").sum("power")/1000]
+        @weekTotals[arrayCount] = [Time.utc(2012, temp_Obj.month, temp_Obj.day).to_i*1000, self.energy_data.where("day=#{day} AND month=#{month}").sum("power")/1000]
   		end
       arrayCount = arrayCount + 1
   	end

@@ -36,7 +36,7 @@ class Panel < ActiveRecord::Base
   # Performance data
   ###################
   def monthSum
-    t = Time.zone.now
+    t = Time.zone.local(2012,12,10);
 
   	last_entry = self.energy_data.where("month=#{t.month} and day=#{t.day}").last
     #puts "LASTMONTH", last_entry
@@ -58,7 +58,7 @@ class Panel < ActiveRecord::Base
   # return array with week attributes for graph
   def consolidate_week 
   	#grab last 30 days
-    t = Time.zone.now
+    t = Time.zone.local(2012,12,10);
 
   	refEntry = self.energy_data.where(:month => t.month, :day => t.day).last
   	puts "REFENTRY", refEntry.nil?
@@ -103,7 +103,7 @@ class Panel < ActiveRecord::Base
 
   # return array with day attributes for graph
   def consolidate_day
-    t = Time.zone.now
+    t = Time.zone.local(2012,12,10);
 
     two_days_ago = t - 2.days
     one_days_ago = t - 1.day

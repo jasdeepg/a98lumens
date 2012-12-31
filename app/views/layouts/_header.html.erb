@@ -22,16 +22,16 @@
         <!--menu starts-->
         <div id="smoothmenu" class="ddsmoothmenu">
           <ul>
-            <li><%=link_to "#", root_path %></li>
-            <li><%=link_to "#", learn_path %></a>
+            <li><%=link_to "Home", '#' %></li>
+            <li><%=link_to "Learn", '#' %></a>
               <ul>
                 <li><a href="">98lumens Solar Process</a></li>
-                <li><%=link_to "#", faqs_path %></li>
+                <li><%=link_to "FAQs", '#' %></li>
               </ul>
             </li>
-            <li><%=link_to "Benefits", benefits_path %></li>
- 			<li><%=link_to "#", about_path %> </li>
-            <li><%= link_to "#", contact_path %></li>
+            <li><%=link_to "Benefits", '#' %></li>
+ 			<li><%=link_to "About", about_path %> </li>
+            <li><%= link_to "Contact", '#' %></li>
             <% if signed_in? %>
                 <div class="dropdown pull-right btn">
                   <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
